@@ -4,7 +4,7 @@ namespace Optimus\Pages\Http\Controllers;
 
 use Optimus\Pages\PageTemplate;
 use Illuminate\Routing\Controller;
-use Optimus\Pages\Http\Resources\Template as TemplateResource;
+use Optimus\Pages\Http\Resources\PageTemplate as PageTemplateResource;
 
 class PageTemplatesController extends Controller
 {
@@ -12,6 +12,6 @@ class PageTemplatesController extends Controller
     {
         $templates = PageTemplate::all();
 
-        return TemplateResource::collection($templates);
+        return PageTemplateResource::collection($templates);
     }
 }

@@ -13,6 +13,14 @@ class CreatePagesTable extends Migration
      */
     public function up()
     {
+        Schema::create('page_templates', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('handler');
+            $table->boolean('is_selectable')->default(true);
+            $table->timestamps();
+        });
+
         Schema::create('pages', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
@@ -29,7 +37,7 @@ class CreatePagesTable extends Migration
 
             $table->foreign('template_id')
                   ->references('id')
-                  ->on('templates')
+                  ->on('page_templates')
                   ->onDelete('cascade');
         });
 
@@ -43,7 +51,7 @@ class CreatePagesTable extends Migration
 
             $table->foreign('template_id')
                   ->references('id')
-                  ->on('templates')
+                  ->on('page_templates')
                   ->onDelete('cascade');
 
             $table->foreign('page_id')
@@ -62,5 +70,6 @@ class CreatePagesTable extends Migration
     {
         Schema::dropIfExists('page_contents');
         Schema::dropIfExists('pages');
+        Schema::dropIfExists('page_templates');
     }
 }

@@ -18,7 +18,7 @@ class UpdateChildPageUris implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  Page  $podcast
+     * @param  Page  $page
      * @return void
      */
     public function __construct(Page $page)

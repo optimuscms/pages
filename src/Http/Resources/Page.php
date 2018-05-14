@@ -21,7 +21,7 @@ class Page extends Resource
                     'slug' => $this->parent->slug
                 ];
             }),
-            'template' => new Template($this->template),
+            'template' => new PageTemplate($this->template),
             'has_fixed_template' => (bool) $this->has_fixed_template,
             'contents' => $this->templateContents
                 ->mapWithKeys(function ($content) {
