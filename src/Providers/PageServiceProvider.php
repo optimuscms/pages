@@ -34,7 +34,7 @@ class PageServiceProvider extends ServiceProvider
     protected function mapAdminRoutes()
     {
         Route::prefix('api')
-             ->middleware('admin')
+             ->middleware('api', 'auth:admin')
              ->namespace($this->controllerNamespace)
              ->group(function () {
                  Route::apiResource('pages', 'PagesController');
