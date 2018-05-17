@@ -27,7 +27,7 @@ class PagesController extends Controller
         $template = PageTemplate::find($request->input('template_id'));
 
         $this->validateContents(
-            $request->input('contents'),
+            $contents = $request->input('contents'),
             $template->handler->validationRules()
         );
 
@@ -42,7 +42,7 @@ class PagesController extends Controller
 
         UpdatePageUri::dispatch($page);
 
-        $template->handler->saveContents($request, $page);
+        $template->handler->saveContents(collect($contents), $page);
 
         return new PageResource($page);
     }
@@ -65,7 +65,7 @@ class PagesController extends Controller
             : $page->template;
 
         $this->validateContents(
-            $request->input('contents'),
+            $contents = $request->input('contents'),
             $template->handler->validationRules($page)
         );
 
@@ -85,7 +85,7 @@ class PagesController extends Controller
         }
 
         $page->deleteContents($template->id);
-        $template->handler->saveContents($request, $page);
+        $template->handler->saveContents(collect($contents), $page);
 
         return new PageResource($page);
     }

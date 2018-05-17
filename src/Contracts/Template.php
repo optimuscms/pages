@@ -3,11 +3,11 @@
 namespace Optimus\Pages\Contracts;
 
 use Optimus\Pages\Page;
-use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 interface Template
 {
     public function validationRules(Page $page = null);
 
-    public function saveContents(Request $request, Page $page);
+    public function saveContents(Page $page, Collection $contents);
 }
