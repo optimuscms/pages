@@ -42,7 +42,7 @@ class PagesController extends Controller
 
         UpdatePageUri::dispatch($page);
 
-        $template->handler->saveContents(collect($contents), $page);
+        $template->handler->saveContents($page, collect($contents));
 
         return new PageResource($page);
     }
@@ -85,7 +85,7 @@ class PagesController extends Controller
         }
 
         $page->deleteContents($template->id);
-        $template->handler->saveContents(collect($contents), $page);
+        $template->handler->saveContents($page, collect($contents));
 
         return new PageResource($page);
     }
