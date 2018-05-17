@@ -4,11 +4,11 @@ namespace Optimus\Pages\Http\Controllers;
 
 use Optimus\Pages\Page;
 use Illuminate\Http\Request;
-use Optimus\Pages\PageTemplate;
 use Illuminate\Validation\Rule;
+use Optimus\Pages\PageTemplate;
 use Illuminate\Routing\Controller;
 use Optimus\Pages\Jobs\UpdatePageUri;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
 use Optimus\Pages\Http\Resources\Page as PageResource;
 
 class PagesController extends Controller
@@ -22,9 +22,14 @@ class PagesController extends Controller
 
     public function store(Request $request)
     {
-        $template = $this->getTemplate($request->input('template_id'));
+        $this->validatePage($request);
 
-        $this->validatePage($request, $template->handler->validationRules());
+        $template = PageTemplate::find($request->input('template_id'));
+
+        $this->validateContents(
+            $request->input('contents'),
+            $template->handler->validationRules()
+        );
 
         $page = Page::create([
             'title' => $request->input('title'),
@@ -53,11 +58,16 @@ class PagesController extends Controller
     {
         $page = Page::findOrFail($id);
 
+        $this->validatePage($request, $page);
+
         $template = ! $page->has_fixed_template
-            ? $this->getTemplate($request->input('template_id'))
+            ? PageTemplate::find($request->input('template_id'))
             : $page->template;
 
-        $this->validatePage($request, $template->handler->validationRules($page), $page);
+        $this->validateContents(
+            $request->input('contents'),
+            $template->handler->validationRules($page)
+        );
 
         $page->update([
             'title' => $request->get('title'),
@@ -89,20 +99,7 @@ class PagesController extends Controller
         return response(null, 204);
     }
 
-    protected function getTemplate($id)
-    {
-        $template = PageTemplate::find($id);
-
-        if (! $template) {
-            throw ValidationException::withMessages([
-                'template_id' => [trans('validation.exists', ['attribute' => 'template'])]
-            ]);
-        }
-
-        return $template;
-    }
-
-    protected function validatePage(Request $request, array $templateRules, Page $page = null)
+    protected function validatePage(Request $request, Page $page = null)
     {
         $request->validate([
             'title' => [
@@ -114,9 +111,15 @@ class PagesController extends Controller
                           });
                 })
             ],
-            'parent_id' => 'nullable|exists:pages,id',
+            'template_id' => 'required|exists:page_templates,id',
+            'parent_id' => 'exists:pages,id|nullable',
             'is_stand_alone' => 'required|boolean',
             'is_published' => 'required|boolean'
-        ] + $templateRules);
+        ]);
+    }
+
+    protected function validateContents(array $contents, array $rules)
+    {
+        Validator::make($contents, $rules)->validate();
     }
 }

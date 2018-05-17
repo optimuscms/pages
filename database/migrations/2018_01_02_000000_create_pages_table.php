@@ -16,6 +16,7 @@ class CreatePagesTable extends Migration
         Schema::create('page_templates', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('slug')->unique();
             $table->string('handler');
             $table->boolean('is_selectable')->default(true);
             $table->timestamps();
