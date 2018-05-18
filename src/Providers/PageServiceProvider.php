@@ -6,6 +6,7 @@ use Optimus\Pages\Page;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
 class PageServiceProvider extends ServiceProvider
 {
