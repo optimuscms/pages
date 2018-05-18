@@ -70,14 +70,14 @@ class PagesController extends Controller
         );
 
         $page->update([
-            'title' => $request->get('title'),
+            'title' => $request->input('title'),
             'slug' => ! $page->has_fixed_slug
-                ? str_slug($request->get('title'))
+                ? str_slug($request->input('title'))
                 : $page->slug,
-            'parent_id' => $request->get('parent_id'),
+            'parent_id' => $request->input('parent_id'),
             'template_id' => $template->id,
-            'is_stand_alone' => $request->get('is_stand_alone'),
-            'is_published' => $request->get('is_published')
+            'is_stand_alone' => $request->input('is_stand_alone'),
+            'is_published' => $request->input('is_published')
         ]);
 
         if (! $page->has_fixed_slug) {
