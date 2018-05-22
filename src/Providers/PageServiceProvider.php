@@ -26,7 +26,9 @@ class PageServiceProvider extends ServiceProvider
         $this->mapAdminRoutes();
 
         $this->app->bind(Page::class, function () {
-            return Page::where('uri', request()->path())
+            $path = request()->path();
+
+            return Page::where('uri', $path === '/' ? null : $path)
                 ->with('templateContents')
                 ->firstOrFail();
         });
