@@ -4,9 +4,10 @@ namespace Optimus\Pages;
 
 use Kalnoy\Nestedset\NodeTrait;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class Page extends Model
+class Page extends Model implements HasMedia
 {
     use NodeTrait, HasMediaTrait;
 
