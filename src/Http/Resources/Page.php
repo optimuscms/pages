@@ -23,10 +23,12 @@ class Page extends Resource
             }),
             'template' => new PageTemplate($this->template),
             'has_fixed_template' => (bool) $this->has_fixed_template,
-            'contents' => $this->templateContents
-                ->mapWithKeys(function ($content) {
-                    return [$content->key => $content->value];
-                }),
+            'contents' => $this->templateContents->mapWithKeys(function ($content) {
+                return [$content->key => $content->value];
+            }),
+            'children_count' => $this->when(
+                ! is_null($this->children_count), $this->children_count
+            ),
             'is_stand_alone' => (bool) $this->is_stand_alone,
             'is_published' => (bool) $this->is_published,
             'is_deletable' => (bool) $this->is_deletable,

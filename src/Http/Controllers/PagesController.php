@@ -13,11 +13,16 @@ use Optimus\Pages\Http\Resources\Page as PageResource;
 
 class PagesController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pages = Page::all();
+        $pages = Page::withCount('children');
 
-        return PageResource::collection($pages);
+        if ($request->has('parent')) {
+            $parent = $request->query('parent');
+            $pages->where('parent_id', $parent === 'root' ? null : $parent);
+        }
+
+        return PageResource::collection($pages->get());
     }
 
     public function store(Request $request)
