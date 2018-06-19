@@ -33,16 +33,6 @@ class Page extends Model implements HasMedia
         return $this->hasMany(PageContent::class);
     }
 
-    public function templateContents()
-    {
-        return $this->contents()
-            ->select('page_contents.*')
-            ->join('pages', function ($join) {
-                $join->on('page_contents.page_id', 'pages.id')
-                     ->whereRaw('pages.template_id = page_contents.template_id');
-            });
-    }
-
     public function createContents(array $contents)
     {
         $records = [];
@@ -56,6 +46,20 @@ class Page extends Model implements HasMedia
         }
 
         $this->contents()->createMany($records);
+    }
+
+    public function hasContent($key)
+    {
+        return $this->contents->contains('key', $key);
+    }
+
+    public function getContent($key)
+    {
+        if (! $this->hasContent($key)) {
+            return null;
+        }
+
+        return $this->contents->firstWhere('key', $key)->value;
     }
 
     public function deleteContents(int $templateId = null)

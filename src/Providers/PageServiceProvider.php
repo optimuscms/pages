@@ -47,10 +47,8 @@ class PageServiceProvider extends ServiceProvider
 
     protected function registerBladeDirectives()
     {
-        Blade::directive('content', function ($contentKey) {
-            return "<?php
-                echo \$page->templateContents->firstWhere('key', $contentKey)->value ?? null;
-            ?>";
+        Blade::directive('content', function ($key) {
+            return "<?php echo \$page->getContent($key); ?>";
         });
     }
 }
