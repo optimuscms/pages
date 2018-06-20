@@ -29,7 +29,7 @@ class PageServiceProvider extends ServiceProvider
             $path = request()->path();
 
             return Page::where('uri', $path === '/' ? null : $path)
-                ->with('templateContents')
+                ->with('contents')
                 ->firstOrFail();
         });
     }
