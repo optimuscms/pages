@@ -10,11 +10,13 @@
     "require": {
         "laravel/framework": "^5.6",
         "kalnoy/nestedset": "^4.3",
-        "spatie/laravel-medialibrary": "^7.3"
+        "optix/media": "dev-master"
     },
     "autoload": {
         "psr-4": {
             "Optimus\\Pages\\": "src"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

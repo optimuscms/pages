@@ -2,14 +2,13 @@
 
 namespace Optimus\Pages;
 
+use Optix\Media\HasMedia;
 use Kalnoy\Nestedset\NodeTrait;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class Page extends Model implements HasMedia
+class Page extends Model
 {
-    use NodeTrait, HasMediaTrait;
+    use NodeTrait, HasMedia;
 
     protected $fillable = [
         'title', 'slug', 'template_id', 'parent_id', 'is_stand_alone', 'is_published'
