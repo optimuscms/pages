@@ -3,15 +3,19 @@
 namespace Optimus\Pages;
 
 use Optix\Media\HasMedia;
+use Illuminate\Http\Request;
+use Optix\Draftable\Draftable;
 use Kalnoy\Nestedset\NodeTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
-    use NodeTrait, HasMedia;
+    use NodeTrait, HasMedia, Draftable;
+
+    protected $dates = ['published_at'];
 
     protected $fillable = [
-        'title', 'slug', 'template_id', 'parent_id', 'is_stand_alone', 'is_published'
+        'title', 'slug', 'template_id', 'parent_id', 'is_stand_alone'
     ];
 
     public function getUri()
@@ -22,17 +26,16 @@ class Page extends Model
             ->implode('/');
     }
 
-    public function template()
+    public function scopeFilter($query, Request $request)
     {
-        return $this->belongsTo(PageTemplate::class);
+        // Parent
+        if ($request->filled('parent')) {
+            $parent = $request->input('parent');
+            $query->where('parent_id', $parent === 'root' ? null : $parent);
+        }
     }
 
-    public function contents()
-    {
-        return $this->hasMany(PageContent::class);
-    }
-
-    public function createContents(array $contents)
+    public function addContents(array $contents)
     {
         $records = [];
 
@@ -40,7 +43,6 @@ class Page extends Model
             $records[] = [
                 'key' => $key,
                 'value' => $value,
-                'template_id' => $this->template_id
             ];
         }
 
@@ -49,7 +51,9 @@ class Page extends Model
 
     public function hasContent($key)
     {
-        return $this->contents->contains('key', $key);
+        return $this->contents->contains(function ($content) use ($key) {
+            return $content->key === $key && ! empty($content->value);
+        });
     }
 
     public function getContent($key)
@@ -61,12 +65,18 @@ class Page extends Model
         return $this->contents->firstWhere('key', $key)->value;
     }
 
-    public function deleteContents(int $templateId = null)
+    public function deleteContents()
     {
-        $this->contents()->when(
-            $templateId, function ($query) use ($templateId) {
-                $query->where('template_id', $templateId);
-            }
-        )->delete();
+        $this->contents()->delete();
+    }
+
+    public function template()
+    {
+        return $this->belongsTo(PageTemplate::class);
+    }
+
+    public function contents()
+    {
+        return $this->hasMany(PageContent::class);
     }
 }

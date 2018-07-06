@@ -2,6 +2,7 @@
 
 namespace Optimus\Pages\Http\Resources;
 
+use Optimus\Media\Http\Resources\Media;
 use Illuminate\Http\Resources\Json\Resource;
 
 class Page extends Resource
@@ -23,9 +24,8 @@ class Page extends Resource
             }),
             'template' => new PageTemplate($this->template),
             'has_fixed_template' => (bool) $this->has_fixed_template,
-            'contents' => $this->templateContents->mapWithKeys(function ($content) {
-                return [$content->key => $content->value];
-            }),
+            'contents' => PageContent::collection($this->contents),
+            'media' => Media::collection($this->media),
             'children_count' => $this->when(
                 ! is_null($this->children_count), $this->children_count
             ),

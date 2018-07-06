@@ -32,8 +32,9 @@ class CreatePagesTable extends Migration
             $table->unsignedInteger('template_id')->index();
             $table->boolean('has_fixed_template')->default(false);
             $table->boolean('is_stand_alone');
-            $table->boolean('is_published');
             $table->boolean('is_deletable')->default(true);
+            $table->timestamp('published_at')->nullable();
+            $table->unsignedInteger('order');
             $table->timestamps();
 
             $table->foreign('template_id')
@@ -44,16 +45,10 @@ class CreatePagesTable extends Migration
 
         Schema::create('page_contents', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('template_id')->index();
             $table->unsignedInteger('page_id')->index();
             $table->string('key');
             $table->text('value')->nullable();
             $table->timestamps();
-
-            $table->foreign('template_id')
-                  ->references('id')
-                  ->on('page_templates')
-                  ->onDelete('cascade');
 
             $table->foreign('page_id')
                   ->references('id')

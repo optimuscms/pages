@@ -15,14 +15,12 @@ class PagesController extends Controller
 {
     public function index(Request $request)
     {
-        $pages = Page::withCount('children');
+        $pages = Page::withDrafts()
+            ->withCount('children')
+            ->filter($request)
+            ->get();
 
-        if ($request->has('parent')) {
-            $parent = $request->query('parent');
-            $pages->where('parent_id', $parent === 'root' ? null : $parent);
-        }
-
-        return PageResource::collection($pages->get());
+        return PageResource::collection($pages);
     }
 
     public function store(Request $request)
@@ -42,8 +40,12 @@ class PagesController extends Controller
             'parent_id' => $request->input('parent_id'),
             'template_id' => $template->id,
             'is_stand_alone' => $request->input('is_stand_alone'),
-            'is_published' => $request->input('is_published')
+            'order' => Page::max() + 1
         ]);
+
+        if ($request->input('is_published')) {
+            $page->publish();
+        }
 
         UpdatePageUri::dispatch($page);
 
@@ -54,14 +56,14 @@ class PagesController extends Controller
 
     public function show($id)
     {
-        $page = Page::findOrFail($id);
+        $page = Page::withDrafts()->findOrFail($id);
 
         return new PageResource($page);
     }
 
     public function update(Request $request, $id)
     {
-        $page = Page::findOrFail($id);
+        $page = Page::withDrafts()->findOrFail($id);
 
         $this->validatePage($request, $page);
 
@@ -82,22 +84,42 @@ class PagesController extends Controller
             'parent_id' => $request->input('parent_id'),
             'template_id' => $template->id,
             'is_stand_alone' => $request->input('is_stand_alone'),
-            'is_published' => $request->input('is_published')
         ]);
+
+        $request->input('published_at') ? $page->publish() : $page->draft();
 
         if (! $page->has_fixed_slug) {
             UpdatePageUri::dispatch($page);
         }
 
-        $page->deleteContents($template->id);
+        $page->deleteContents();
+        $page->detachMedia();
+        
         $template->handler->saveContents($page, collect($contents));
 
         return new PageResource($page);
     }
 
+    public function reorder(Request $request)
+    {
+        $request->validate([
+            'pages' => 'required|array',
+            'pages.*' => 'exists:pages,id'
+        ]);
+
+        $order = 1;
+        foreach ($request->input('pages') as $id) {
+            Page::findOrFail($id)->update(['order' => $order]);
+            $order++;
+        }
+
+        return response(null, 204);
+    }
+
     public function destroy($id)
     {
-        Page::where('is_deletable', true)
+        Page::withDrafts()
+            ->where('is_deletable', true)
             ->findOrFail($id)
             ->delete();
 

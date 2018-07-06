@@ -41,6 +41,7 @@ class PageServiceProvider extends ServiceProvider
              ->namespace($this->controllerNamespace)
              ->group(function () {
                  Route::apiResource('pages', 'PagesController');
+                 Route::patch('pages', 'PagesController@reorder');
                  Route::get('page-templates', 'PageTemplatesController@index');
              });
     }
