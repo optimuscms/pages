@@ -109,7 +109,7 @@ class PagesController extends Controller
 
         $order = 1;
         foreach ($request->input('pages') as $id) {
-            Page::findOrFail($id)->update(['order' => $order]);
+            Page::withDrafts()->find($id)->update(['order' => $order]);
             $order++;
         }
 
