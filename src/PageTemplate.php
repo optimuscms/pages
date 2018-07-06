@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PageTemplate extends Model
 {
     protected $fillable = [
-        'name', 'slug', 'is_selectable'
+        'name', 'component', 'is_selectable'
     ];
 
     public function getHandlerAttribute($className)
