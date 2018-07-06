@@ -11,7 +11,7 @@ class PageTemplate extends Resource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'slug' => $this->slug,
+            'component' => $this->component,
             'is_selectable' => (bool) $this->is_selectable
         ];
     }

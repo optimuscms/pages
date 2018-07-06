@@ -33,8 +33,8 @@ class CreatePagesTable extends Migration
             $table->boolean('has_fixed_template')->default(false);
             $table->boolean('is_stand_alone');
             $table->boolean('is_deletable')->default(true);
-            $table->timestamp('published_at')->nullable();
             $table->unsignedInteger('order');
+            $table->timestamp('published_at')->nullable();
             $table->timestamps();
 
             $table->foreign('template_id')
