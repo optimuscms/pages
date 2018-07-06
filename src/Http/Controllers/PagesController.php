@@ -40,7 +40,7 @@ class PagesController extends Controller
             'parent_id' => $request->input('parent_id'),
             'template_id' => $template->id,
             'is_stand_alone' => $request->input('is_stand_alone'),
-            'order' => Page::max() + 1
+            'order' => Page::max('order') + 1
         ]);
 
         if ($request->input('is_published')) {

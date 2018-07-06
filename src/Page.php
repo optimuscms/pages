@@ -15,7 +15,7 @@ class Page extends Model
     protected $dates = ['published_at'];
 
     protected $fillable = [
-        'title', 'slug', 'template_id', 'parent_id', 'is_stand_alone'
+        'title', 'slug', 'template_id', 'parent_id', 'is_stand_alone', 'order'
     ];
 
     public function getUri()
