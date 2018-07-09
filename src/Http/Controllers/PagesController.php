@@ -86,7 +86,7 @@ class PagesController extends Controller
             'is_stand_alone' => $request->input('is_stand_alone'),
         ]);
 
-        $request->input('published_at') ? $page->publish() : $page->draft();
+        $request->input('is_published') || ! $page->is_deletable ? $page->publish() : $page->draft();
 
         if (! $page->has_fixed_slug) {
             UpdatePageUri::dispatch($page);
