@@ -6,12 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class PageContent extends Model
 {
-    protected $fillable = [
-        'template_id', 'key', 'value'
-    ];
-
-    public function template()
-    {
-        return $this->belongsTo(PageTemplate::class);
-    }
+    protected $fillable = ['key', 'value'];
 }
