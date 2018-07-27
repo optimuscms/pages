@@ -13,11 +13,11 @@ class Page extends Resource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
-            'has_fixed_slug' => (bool) $this->has_fixed_slug,
+            'has_fixed_slug' => $this->has_fixed_slug,
             'uri' => $this->uri,
             'parent_id' => $this->parent_id,
             'template' => new PageTemplate($this->template),
-            'has_fixed_template' => (bool) $this->has_fixed_template,
+            'has_fixed_template' => $this->has_fixed_template,
             'contents' => PageContent::collection($this->contents),
             'media' => Media::collection($this->media),
             'children_count' => $this->children_count,
@@ -25,9 +25,9 @@ class Page extends Resource
                 'title' => $this->getMeta('title'),
                 'description' => $this->getMeta('description')
             ],
-            'is_stand_alone' => (bool) $this->is_stand_alone,
-            'is_published' => (bool) ! is_null($this->published_at),
-            'is_deletable' => (bool) $this->is_deletable,
+            'is_stand_alone' => $this->is_stand_alone,
+            'is_published' => ! is_null($this->published_at),
+            'is_deletable' => $this->is_deletable,
             'created_at' => (string) $this->created_at,
             'updated_at' => (string) $this->updated_at
         ];

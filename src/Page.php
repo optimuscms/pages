@@ -11,7 +11,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
-    use NodeTrait, HasMedia, Metable, Draftable;
+    use Draftable, HasMedia, Metable, NodeTrait;
+
+    protected $casts = [
+        'has_fixed_template' => 'bool',
+        'has_fixed_slug' => 'bool',
+        'is_deletable' => 'bool',
+        'is_stand_alone' => 'bool'
+    ];
 
     protected $dates = ['published_at'];
 
