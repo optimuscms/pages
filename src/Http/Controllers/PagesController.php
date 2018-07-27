@@ -43,13 +43,20 @@ class PagesController extends Controller
             'order' => Page::max('order') + 1
         ]);
 
+        // Uri
+        UpdatePageUri::dispatch($page);
+
+        // Publish / Draft
         if ($request->input('is_published')) {
             $page->publish();
         }
 
-        UpdatePageUri::dispatch($page);
-
+        // Template Contents
         $template->handler->saveContents($page, collect($contents));
+
+        // Meta
+        $page->setMeta('title', $request->input('meta.title', $page->title));
+        $page->setMeta('description', $request->input('meta.description'));
 
         return new PageResource($page);
     }
@@ -86,16 +93,23 @@ class PagesController extends Controller
             'is_stand_alone' => $request->input('is_stand_alone'),
         ]);
 
-        $request->input('is_published') || ! $page->is_deletable ? $page->publish() : $page->draft();
-
+        // Uri
         if (! $page->has_fixed_slug) {
             UpdatePageUri::dispatch($page);
         }
 
+        // Publish / Draft
+        $request->input('is_published') || ! $page->is_deletable ? $page->publish() : $page->draft();
+#
+        // Template Contents
         $page->deleteContents();
         $page->detachMedia();
-        
+
         $template->handler->saveContents($page, collect($contents));
+
+        // Meta
+        $page->syncMeta('title', $request->input('meta.title', $page->title));
+        $page->syncMeta('description', $request->input('meta.description'));
 
         return new PageResource($page);
     }

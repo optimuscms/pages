@@ -3,6 +3,7 @@
 namespace Optimus\Pages;
 
 use Optix\Media\HasMedia;
+use Plank\Metable\Metable;
 use Illuminate\Http\Request;
 use Optix\Draftable\Draftable;
 use Kalnoy\Nestedset\NodeTrait;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
-    use NodeTrait, HasMedia, Draftable;
+    use NodeTrait, HasMedia, Metable, Draftable;
 
     protected $dates = ['published_at'];
 

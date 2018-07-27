@@ -23,6 +23,10 @@ class Page extends Resource
             'children_count' => $this->when(
                 ! is_null($this->children_count), $this->children_count
             ),
+            'meta' => [
+                'title' => $this->getMeta('title'),
+                'description' => $this->getMeta('description')
+            ],
             'is_stand_alone' => (bool) $this->is_stand_alone,
             'is_published' => (bool) ! is_null($this->published_at),
             'is_deletable' => (bool) $this->is_deletable,
