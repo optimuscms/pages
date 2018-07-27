@@ -20,9 +20,7 @@ class Page extends Resource
             'has_fixed_template' => (bool) $this->has_fixed_template,
             'contents' => PageContent::collection($this->contents),
             'media' => Media::collection($this->media),
-            'children_count' => $this->when(
-                ! is_null($this->children_count), $this->children_count
-            ),
+            'children_count' => $this->children_count,
             'meta' => [
                 'title' => $this->getMeta('title'),
                 'description' => $this->getMeta('description')
