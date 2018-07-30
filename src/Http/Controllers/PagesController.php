@@ -108,8 +108,8 @@ class PagesController extends Controller
         $template->handler->saveContents($page, collect($contents));
 
         // Meta
-        $page->syncMeta('title', $request->input('meta.title', $page->title));
-        $page->syncMeta('description', $request->input('meta.description'));
+        $page->setMeta('title', $request->input('meta.title', $page->title));
+        $page->setMeta('description', $request->input('meta.description'));
 
         return new PageResource($page);
     }
