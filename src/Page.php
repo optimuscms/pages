@@ -26,8 +26,6 @@ class Page extends Model
         'title', 'slug', 'template_id', 'parent_id', 'is_stand_alone', 'order'
     ];
 
-    protected $withCount = ['children'];
-
     public function getUri()
     {
         return $this->ancestors()
