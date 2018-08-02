@@ -36,7 +36,6 @@ class Page extends Model
 
     public function scopeFilter($query, Request $request)
     {
-        // Parent
         if ($request->filled('parent')) {
             $parent = $request->input('parent');
             $query->where('parent_id', $parent === 'root' ? null : $parent);
