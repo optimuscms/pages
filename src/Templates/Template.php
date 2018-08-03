@@ -2,11 +2,14 @@
 
 namespace Optimus\Pages\Templates;
 
+use Optimus\Pages\Page;
+use Illuminate\Support\Collection;
+
 interface Template
 {
-    // validate
+    public function validate(Collection $contents);
 
-    // rules
+    public function save(Page $page, Collection $contents);
 
-    // save
+    public function render($data = [], $mergeData = []);
 }

@@ -2,7 +2,6 @@
 
 namespace Optimus\Pages\Providers;
 
-use Optimus\Pages\Page;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -23,14 +22,6 @@ class PageServiceProvider extends ServiceProvider
         $this->registerBladeDirectives();
 
         $this->mapAdminRoutes();
-
-        $this->app->bind(Page::class, function () {
-            $path = request()->path();
-
-            return Page::where('uri', $path === '/' ? null : $path)
-                ->with('contents')
-                ->firstOrFail();
-        });
     }
 
     protected function mapAdminRoutes()

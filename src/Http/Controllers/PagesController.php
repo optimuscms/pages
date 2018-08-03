@@ -29,7 +29,9 @@ class PagesController extends Controller
 
         $template = $templateLoader->load($request->input('template'));
 
-        $template->validate($request->input('contents'));
+        $template->validate(
+            $contents = collect($request->input('contents'))
+        );
 
         $page = Page::create([
             'title' => $request->input('title'),
