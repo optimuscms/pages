@@ -36,6 +36,8 @@ class PagesController extends Controller
             'is_stand_alone' => $request->input('is_stand_alone')
         ]);
 
+        UpdatePageUri::dispatch($page);
+
         $template->handler->save($page, $request);
 
         if ($request->input('is_published')) {
@@ -70,6 +72,10 @@ class PagesController extends Controller
             'template_id' => $template->id,
             'is_stand_alone' => $request->input('is_stand_alone')
         ]);
+
+        if (! $page->has_fixed_uri) {
+            UpdatePageUri::dispatch($page);
+        }
 
         $template->handler->save($request);
 

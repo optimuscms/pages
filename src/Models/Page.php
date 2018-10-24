@@ -3,7 +3,6 @@
 namespace Optimus\Pages\Models;
 
 use Optix\Media\HasMedia;
-use Plank\Metable\Metable;
 use Illuminate\Http\Request;
 use Optix\Draftable\Draftable;
 use Kalnoy\Nestedset\NodeTrait;
@@ -11,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
-    use Draftable, HasMedia, Metable, NodeTrait;
+    use Draftable, HasMedia, NodeTrait;
 
     protected $casts = [
         'has_fixed_template' => 'bool',
