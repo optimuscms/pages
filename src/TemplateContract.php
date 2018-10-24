@@ -5,7 +5,7 @@ namespace Optimus\Pages;
 use Illuminate\Http\Request;
 use Optimus\Pages\Models\Page;
 
-interface Template
+interface TemplateContract
 {
     public function validate(Request $request);
 
