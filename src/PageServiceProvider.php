@@ -1,8 +1,7 @@
 <?php
 
-namespace Optimus\Pages\Providers;
+namespace Optimus\Pages;
 
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
