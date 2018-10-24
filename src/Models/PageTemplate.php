@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class PageTemplate extends Model
 {
+    protected $casts = [
+        'is_selectable' => 'bool'
+    ];
+
     protected $fillable = [
         'name', 'component_name', 'is_selectable'
     ];

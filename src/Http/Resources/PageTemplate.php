@@ -12,7 +12,7 @@ class PageTemplate extends Resource
             'id' => $this->id,
             'name' => $this->name,
             'component_name' => $this->component_name,
-            'is_selectable' => (bool) $this->is_selectable
+            'is_selectable' => $this->is_selectable
         ];
     }
 }
