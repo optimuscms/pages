@@ -1,17 +1,17 @@
 <?php
 
-namespace Optimus\Pages;
+namespace Optimus\Pages\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class PageTemplate extends Model
 {
     protected $fillable = [
-        'name', 'component', 'is_selectable'
+        'name', 'component_name', 'is_selectable'
     ];
 
     public function getHandlerAttribute($className)
     {
-        return app($className);
+        return new $className;
     }
 }

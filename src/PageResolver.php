@@ -3,6 +3,7 @@
 namespace Optimus\Pages;
 
 use Illuminate\Http\Request;
+use Optimus\Pages\Models\Page;
 
 class PageResolver
 {
@@ -15,23 +16,10 @@ class PageResolver
 
     public function resolve()
     {
-        return $this->query()->first();
-    }
-
-    public function resolveOrFail()
-    {
-        return $this->query()->firstOrFail();
-    }
-
-    protected function query()
-    {
-        return Page::where('uri', $this->uri());
-    }
-
-    protected function uri()
-    {
         $path = $this->request->path();
 
-        return $path === '/' ? null : $path;
+        $uri = $path === '/' ? null : $path;
+
+        return Page::where('uri', $uri)->firstOrFail();
     }
 }

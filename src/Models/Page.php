@@ -1,6 +1,6 @@
 <?php
 
-namespace Optimus\Pages;
+namespace Optimus\Pages\Models;
 
 use Optix\Media\HasMedia;
 use Plank\Metable\Metable;
@@ -15,7 +15,7 @@ class Page extends Model
 
     protected $casts = [
         'has_fixed_template' => 'bool',
-        'has_fixed_slug' => 'bool',
+        'has_fixed_uri' => 'bool',
         'is_deletable' => 'bool',
         'is_stand_alone' => 'bool'
     ];
@@ -36,6 +36,7 @@ class Page extends Model
 
     public function scopeFilter($query, Request $request)
     {
+        // Parent
         if ($request->filled('parent')) {
             $parent = $request->input('parent');
             $query->where('parent_id', $parent === 'root' ? null : $parent);

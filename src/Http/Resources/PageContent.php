@@ -10,9 +10,9 @@ class PageContent extends Resource
     {
         return [
             'id' => $this->id,
+            'template_id' => $this->template_id,
             'key' => $this->key,
             'value' => $this->value,
-            'template_id' => $this->template_id,
             'created_at' => (string) $this->created_at,
             'updated_at' => (string) $this->updated_at
         ];

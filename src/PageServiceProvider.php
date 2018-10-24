@@ -19,27 +19,21 @@ class PageServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
 
-        $this->registerBladeDirectives();
-
-        $this->mapAdminRoutes();
+        $this->registerAdminRoutes();
     }
 
-    protected function mapAdminRoutes()
+    protected function registerAdminRoutes()
     {
         Route::prefix('api')
              ->middleware('api', 'auth:admin')
              ->namespace($this->controllerNamespace)
              ->group(function () {
+                 // Pages
                  Route::apiResource('pages', 'PagesController');
                  Route::patch('pages', 'PagesController@reorder');
+
+                 // Templates
                  Route::get('page-templates', 'PageTemplatesController@index');
              });
-    }
-
-    protected function registerBladeDirectives()
-    {
-        Blade::directive('content', function ($key) {
-            return "<?php echo \$page->getContent($key); ?>";
-        });
     }
 }

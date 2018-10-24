@@ -2,13 +2,11 @@
 
 namespace Optimus\Pages\Http\Controllers;
 
-use Optimus\Pages\Page;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Optimus\Pages\PageTemplate;
+use Optimus\Pages\Models\Page;
 use Illuminate\Routing\Controller;
 use Optimus\Pages\Jobs\UpdatePageUri;
-use Illuminate\Support\Facades\Validator;
+use Optimus\Pages\Models\PageTemplate;
 use Optimus\Pages\Http\Resources\Page as PageResource;
 
 class PagesController extends Controller
@@ -23,40 +21,85 @@ class PagesController extends Controller
         return PageResource::collection($pages);
     }
 
-    public function store(TemplateLoader $templateLoader, Request $request)
+    public function store(Request $request)
     {
         $this->validatePage($request);
 
-        $template = $templateLoader->load($request->input('template'));
+        $template = PageTemplate::find($request->input('template_id'));
 
-        $template->validate(
-            $contents = collect($request->input('contents'))
-        );
+        $template->handler->validate($request);
 
         $page = Page::create([
             'title' => $request->input('title'),
             'parent_id' => $request->input('parent_id'),
-            'template_id' => $request->input('template_id'),
+            'template_id' => $template->id,
             'is_stand_alone' => $request->input('is_stand_alone')
         ]);
 
-        $template->save($contents);
+        $template->handler->save($page, $request);
 
-        // Todo: Meta
-
-        $page->publishIf($request->input('is_published'));
+        if ($request->input('is_published')) {
+            $page->publish();
+        }
 
         return new PageResource($page);
     }
 
-    protected function validatePage(Request $request, Page $page = null)
+    public function show($id)
+    {
+        $page = Page::withDrafts()->findOrFail($id);
+
+        return new PageResource($page);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $page = Page::withDrafts()->findOrFail($id);
+
+        $this->validatePage($request);
+
+        $template = $page->has_fixed_template
+            ? PageTemplate::find($request->input('template_id'))
+            : $page->template;
+
+        $template->handler->validate($request);
+
+        $page->update([
+            'title' => $request->input('title'),
+            'parent_id' => $request->input('parent_id'),
+            'template_id' => $template->id,
+            'is_stand_alone' => $request->input('is_stand_alone')
+        ]);
+
+        $template->handler->save($request);
+
+        if ($page->isDraft() && $request->input('is_published')) {
+            $page->publish();
+        } elseif ($page->isPublished() && ! $request->input('is_published')) {
+            $page->draft();
+        }
+
+        return new PageResource($page);
+    }
+
+    public function destroy($id)
+    {
+        Page::withDrafts()
+            ->where('is_deletable', true)
+            ->findOrFail($id)
+            ->delete();
+
+        return response(null, 204);
+    }
+
+    protected function validatePage(Request $request)
     {
         $request->validate([
             'title' => 'required',
             'template_id' => 'required|exists:page_templates,id',
             'parent_id' => 'exists:pages,id|nullable',
-            'is_stand_alone' => 'required|boolean',
-            'is_published' => 'required|boolean'
+            'is_stand_alone' => 'present|boolean',
+            'is_published' => 'present|boolean'
         ]);
     }
 }
