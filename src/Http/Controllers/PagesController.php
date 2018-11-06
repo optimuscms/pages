@@ -77,7 +77,10 @@ class PagesController extends Controller
             UpdatePageUri::dispatch($page);
         }
 
-        $template->handler->save($request);
+        $page->detachMedia();
+        $page->deleteContents();
+
+        $template->handler->save($page, $request);
 
         if ($page->isDraft() && $request->input('is_published')) {
             $page->publish();
