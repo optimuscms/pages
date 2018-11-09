@@ -9,6 +9,12 @@ use Optimus\Pages\Http\Resources\PageTemplate as PageTemplateResource;
 
 class PageTemplatesController extends Controller
 {
+    /**
+     * Display a list of page templates.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index(Request $request)
     {
         $templates = PageTemplate::filter($request)->get();

@@ -11,6 +11,12 @@ use Optimus\Pages\Http\Resources\Page as PageResource;
 
 class PagesController extends Controller
 {
+    /**
+     * Display a list of pages.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index(Request $request)
     {
         $pages = Page::withDrafts()
@@ -21,6 +27,12 @@ class PagesController extends Controller
         return PageResource::collection($pages);
     }
 
+    /**
+     * Create a new post.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(Request $request)
     {
         $this->validatePage($request);
@@ -47,6 +59,12 @@ class PagesController extends Controller
         return new PageResource($page);
     }
 
+    /**
+     * Display the specified page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show($id)
     {
         $page = Page::withDrafts()->findOrFail($id);
@@ -54,6 +72,13 @@ class PagesController extends Controller
         return new PageResource($page);
     }
 
+    /**
+     * Update the specified page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(Request $request, $id)
     {
         $page = Page::withDrafts()->findOrFail($id);
@@ -91,6 +116,12 @@ class PagesController extends Controller
         return new PageResource($page);
     }
 
+    /**
+     * Delete the specified page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
         Page::withDrafts()
@@ -101,6 +132,11 @@ class PagesController extends Controller
         return response(null, 204);
     }
 
+    /**
+     * Validate the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     */
     protected function validatePage(Request $request)
     {
         $request->validate([

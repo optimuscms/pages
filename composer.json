@@ -14,9 +14,17 @@
         "optimuscms/media": "dev-master",
         "spatie/laravel-sluggable": "^2.1"
     },
+    "require-dev": {
+        "orchestra/testbench": "^3.7"
+    },
     "autoload": {
         "psr-4": {
             "Optimus\\Pages\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Optimus\\Posts\\Tests\\": "tests"
         }
     },
     "extra": {

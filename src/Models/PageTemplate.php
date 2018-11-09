@@ -26,6 +26,6 @@ class PageTemplate extends Model
 
     public function getHandlerAttribute($className)
     {
-        return new $className;
+        return app($className);
     }
 }
