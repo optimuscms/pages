@@ -45,7 +45,8 @@ class PagesController extends Controller
             'title' => $request->input('title'),
             'parent_id' => $request->input('parent_id'),
             'template_id' => $template->id,
-            'is_stand_alone' => $request->input('is_stand_alone')
+            'is_stand_alone' => $request->input('is_stand_alone'),
+            'order' => Page::max('order') + 1
         ]);
 
         UpdatePageUri::dispatch($page);
