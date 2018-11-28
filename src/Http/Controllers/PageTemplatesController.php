@@ -2,15 +2,22 @@
 
 namespace Optimus\Pages\Http\Controllers;
 
-use Optimus\Pages\PageTemplate;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Optimus\Pages\Models\PageTemplate;
 use Optimus\Pages\Http\Resources\PageTemplate as PageTemplateResource;
 
 class PageTemplatesController extends Controller
 {
-    public function index()
+    /**
+     * Display a list of page templates.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request)
     {
-        $templates = PageTemplate::all();
+        $templates = PageTemplate::filter($request)->get();
 
         return PageTemplateResource::collection($templates);
     }

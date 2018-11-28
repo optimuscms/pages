@@ -1,21 +1,22 @@
 <?php
 
-namespace Optimus\Pages;
+namespace Optimus\Pages\Models;
 
 use Optix\Media\HasMedia;
-use Plank\Metable\Metable;
 use Illuminate\Http\Request;
+use Spatie\Sluggable\HasSlug;
 use Optix\Draftable\Draftable;
 use Kalnoy\Nestedset\NodeTrait;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
-    use Draftable, HasMedia, Metable, NodeTrait;
+    use Draftable, HasMedia, HasSlug, NodeTrait;
 
     protected $casts = [
         'has_fixed_template' => 'bool',
-        'has_fixed_slug' => 'bool',
+        'has_fixed_uri' => 'bool',
         'is_deletable' => 'bool',
         'is_stand_alone' => 'bool'
     ];
@@ -25,6 +26,28 @@ class Page extends Model
     protected $fillable = [
         'title', 'slug', 'template_id', 'parent_id', 'is_stand_alone', 'order'
     ];
+
+    public function getSlugOptions(): SlugOptions
+    {
+        $options = SlugOptions::create()
+            ->generateSlugsFrom('title')
+            ->saveSlugsTo('slug');
+
+        if ($this->has_fixed_uri) {
+            $options->doNotGenerateSlugsOnUpdate();
+        }
+
+        return $options;
+    }
+
+    protected function otherRecordExistsWithSlug(string $slug): bool
+    {
+        return static::where($this->slugOptions->slugField, $slug)
+            ->where($this->getKeyName(), '!=', $this->getKey() ?? '0')
+            ->where($this->getParentIdName(), $this->getParentId())
+            ->withoutGlobalScopes()
+            ->exists();
+    }
 
     public function getUri()
     {

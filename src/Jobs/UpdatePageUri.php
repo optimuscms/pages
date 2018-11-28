@@ -2,7 +2,7 @@
 
 namespace Optimus\Pages\Jobs;
 
-use Optimus\Pages\Page;
+use Optimus\Pages\Models\Page;
 use Illuminate\Foundation\Bus\Dispatchable;
 
 class UpdatePageUri

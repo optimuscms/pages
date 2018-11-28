@@ -2,17 +2,21 @@
 
 namespace Optimus\Pages\Http\Controllers;
 
-use Optimus\Pages\Page;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Optimus\Pages\PageTemplate;
+use Optimus\Pages\Models\Page;
 use Illuminate\Routing\Controller;
 use Optimus\Pages\Jobs\UpdatePageUri;
-use Illuminate\Support\Facades\Validator;
+use Optimus\Pages\Models\PageTemplate;
 use Optimus\Pages\Http\Resources\Page as PageResource;
 
 class PagesController extends Controller
 {
+    /**
+     * Display a list of pages.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index(Request $request)
     {
         $pages = Page::withDrafts()
@@ -23,44 +27,45 @@ class PagesController extends Controller
         return PageResource::collection($pages);
     }
 
+    /**
+     * Create a new post.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(Request $request)
     {
         $this->validatePage($request);
 
         $template = PageTemplate::find($request->input('template_id'));
 
-        $this->validateContents(
-            $contents = $request->input('contents'),
-            $template->handler->validationRules()
-        );
+        $template->handler->validate($request);
 
         $page = Page::create([
             'title' => $request->input('title'),
-            'slug' => str_slug($request->input('title')),
             'parent_id' => $request->input('parent_id'),
             'template_id' => $template->id,
             'is_stand_alone' => $request->input('is_stand_alone'),
             'order' => Page::max('order') + 1
         ]);
 
-        // Uri
         UpdatePageUri::dispatch($page);
 
-        // Publish / Draft
+        $template->handler->save($page, $request);
+
         if ($request->input('is_published')) {
             $page->publish();
         }
 
-        // Template Contents
-        $template->handler->saveContents($page, collect($contents));
-
-        // Meta
-        $page->setMeta('title', $request->input('meta.title', $page->title));
-        $page->setMeta('description', $request->input('meta.description'));
-
         return new PageResource($page);
     }
 
+    /**
+     * Display the specified page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show($id)
     {
         $page = Page::withDrafts()->findOrFail($id);
@@ -68,68 +73,56 @@ class PagesController extends Controller
         return new PageResource($page);
     }
 
+    /**
+     * Update the specified page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(Request $request, $id)
     {
         $page = Page::withDrafts()->findOrFail($id);
 
-        $this->validatePage($request, $page);
+        $this->validatePage($request);
 
-        $template = ! $page->has_fixed_template
+        $template = $page->has_fixed_template
             ? PageTemplate::find($request->input('template_id'))
             : $page->template;
 
-        $this->validateContents(
-            $contents = $request->input('contents'),
-            $template->handler->validationRules($page)
-        );
+        $template->handler->validate($request);
 
         $page->update([
             'title' => $request->input('title'),
-            'slug' => ! $page->has_fixed_slug
-                ? str_slug($request->input('title'))
-                : $page->slug,
             'parent_id' => $request->input('parent_id'),
             'template_id' => $template->id,
-            'is_stand_alone' => $request->input('is_stand_alone'),
+            'is_stand_alone' => $request->input('is_stand_alone')
         ]);
 
-        // Uri
-        if (! $page->has_fixed_slug) {
+        if (! $page->has_fixed_uri) {
             UpdatePageUri::dispatch($page);
         }
 
-        // Publish / Draft
-        $request->input('is_published') || ! $page->is_deletable ? $page->publish() : $page->draft();
-#
-        // Template Contents
-        $page->deleteContents();
         $page->detachMedia();
+        $page->deleteContents();
 
-        $template->handler->saveContents($page, collect($contents));
+        $template->handler->save($page, $request);
 
-        // Meta
-        $page->setMeta('title', $request->input('meta.title', $page->title));
-        $page->setMeta('description', $request->input('meta.description'));
+        if ($page->isDraft() && $request->input('is_published')) {
+            $page->publish();
+        } elseif ($page->isPublished() && ! $request->input('is_published')) {
+            $page->draft();
+        }
 
         return new PageResource($page);
     }
 
-    public function reorder(Request $request)
-    {
-        $request->validate([
-            'pages' => 'required|array',
-            'pages.*' => 'exists:pages,id'
-        ]);
-
-        $order = 1;
-        foreach ($request->input('pages') as $id) {
-            Page::withDrafts()->find($id)->update(['order' => $order]);
-            $order++;
-        }
-
-        return response(null, 204);
-    }
-
+    /**
+     * Delete the specified page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
         Page::withDrafts()
@@ -140,27 +133,19 @@ class PagesController extends Controller
         return response(null, 204);
     }
 
-    protected function validatePage(Request $request, Page $page = null)
+    /**
+     * Validate the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     */
+    protected function validatePage(Request $request)
     {
         $request->validate([
-            'title' => [
-                'required',
-                Rule::unique('pages')->where(function ($query) use ($request, $page) {
-                    $query->where('parent_id', $request->input('parent_id'))
-                          ->when($page, function ($query) use ($page) {
-                              $query->where('id', '<>', $page->id);
-                          });
-                })
-            ],
+            'title' => 'required',
             'template_id' => 'required|exists:page_templates,id',
             'parent_id' => 'exists:pages,id|nullable',
-            'is_stand_alone' => 'required|boolean',
-            'is_published' => 'required|boolean'
+            'is_stand_alone' => 'present|boolean',
+            'is_published' => 'present|boolean'
         ]);
-    }
-
-    protected function validateContents(array $contents, array $rules)
-    {
-        Validator::make($contents, $rules)->validate();
     }
 }

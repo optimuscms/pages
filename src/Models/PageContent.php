@@ -1,6 +1,6 @@
 <?php
 
-namespace Optimus\Pages;
+namespace Optimus\Pages\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

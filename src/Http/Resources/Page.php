@@ -13,20 +13,18 @@ class Page extends Resource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
-            'has_fixed_slug' => $this->has_fixed_slug,
             'uri' => $this->uri,
+            'has_fixed_uri' => $this->has_fixed_uri,
             'parent_id' => $this->parent_id,
-            'template' => new PageTemplate($this->template),
+            'template_id' => $this->template_id,
             'has_fixed_template' => $this->has_fixed_template,
             'contents' => PageContent::collection($this->contents),
             'media' => Media::collection($this->media),
-            'children_count' => $this->children_count,
-            'meta' => [
-                'title' => $this->getMeta('title'),
-                'description' => $this->getMeta('description')
-            ],
+            'children_count' => $this->when(
+                ! is_null($this->children_count), $this->children_count
+            ),
             'is_stand_alone' => $this->is_stand_alone,
-            'is_published' => ! is_null($this->published_at),
+            'is_published' => $this->isPublished(),
             'is_deletable' => $this->is_deletable,
             'created_at' => (string) $this->created_at,
             'updated_at' => (string) $this->updated_at

@@ -2,8 +2,8 @@
 
 namespace Optimus\Pages\Jobs;
 
-use Optimus\Pages\Page;
 use Illuminate\Bus\Queueable;
+use Optimus\Pages\Models\Page;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;

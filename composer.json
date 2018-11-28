@@ -10,13 +10,28 @@
     "require": {
         "laravel/framework": "~5.5|~5.6|~5.7",
         "kalnoy/nestedset": "^4.3",
-        "optix/draftable": "dev-master",
+        "optix/draftable": "^1.0",
         "optimuscms/media": "dev-master",
-        "plank/laravel-metable": "^1.1"
+        "spatie/laravel-sluggable": "^2.1"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^3.7"
     },
     "autoload": {
         "psr-4": {
             "Optimus\\Pages\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Optimus\\Posts\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Optimus\\Pages\\PageServiceProvider"
+            ]
         }
     },
     "minimum-stability": "dev",
