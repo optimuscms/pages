@@ -24,7 +24,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Optimus\\Posts\\Tests\\": "tests"
+            "Optimus\\Pages\\Tests\\": "tests"
         }
     },
     "extra": {
