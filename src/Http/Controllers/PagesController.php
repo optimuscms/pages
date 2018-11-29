@@ -86,7 +86,7 @@ class PagesController extends Controller
 
         $this->validatePage($request);
 
-        $template = $page->has_fixed_template
+        $template = ! $page->has_fixed_template
             ? PageTemplate::find($request->input('template_id'))
             : $page->template;
 
