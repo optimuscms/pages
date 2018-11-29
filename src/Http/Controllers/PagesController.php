@@ -22,6 +22,7 @@ class PagesController extends Controller
         $pages = Page::withDrafts()
             ->withCount('children')
             ->filter($request)
+            ->orderBy('order')
             ->get();
 
         return PageResource::collection($pages);
