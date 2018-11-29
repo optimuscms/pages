@@ -28,7 +28,7 @@ class PagesController extends Controller
     }
 
     /**
-     * Create a new post.
+     * Create a new page.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
@@ -115,6 +115,32 @@ class PagesController extends Controller
         }
 
         return new PageResource($page);
+    }
+
+    /**
+     * Reorder a specified list of pages.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function reorder(Request $request)
+    {
+        $request->validate([
+            'pages' => 'required|array',
+            'pages.*' => 'exists:pages,id'
+        ]);
+
+        $order = 1;
+
+        foreach ($request->input('pages') as $id) {
+            Page::where('id', $id)->update([
+                'order' => $order
+            ]);
+
+            $order++;
+        }
+
+        return response(null, 204);
     }
 
     /**
