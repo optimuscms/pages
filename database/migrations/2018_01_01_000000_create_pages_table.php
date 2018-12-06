@@ -26,8 +26,8 @@ class CreatePagesTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->string('slug')->nullable();
-            $table->boolean('has_fixed_uri')->default(false);
             $table->string('uri')->nullable();
+            $table->boolean('has_fixed_uri')->default(false);
             $table->nestedSet();
             $table->unsignedInteger('template_id')->index();
             $table->boolean('has_fixed_template')->default(false);
