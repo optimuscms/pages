@@ -32,7 +32,8 @@ class PageServiceProvider extends ServiceProvider
                  Route::patch('pages', 'PagesController@reorder');
 
                  // Templates
-                 Route::get('page-templates', 'PageTemplatesController@index');
+                 Route::apiResource('page-templates', 'TemplatesController')
+                      ->only(['index', 'show']);
              });
     }
 }

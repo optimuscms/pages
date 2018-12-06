@@ -2,10 +2,10 @@
 
 namespace Optimus\Pages\Http\Resources;
 
-use Optimus\Media\Http\Resources\Media;
 use Illuminate\Http\Resources\Json\Resource;
+use Optimus\Media\Http\Resources\MediaResource;
 
-class Page extends Resource
+class PageResource extends Resource
 {
     public function toArray($request)
     {
@@ -18,10 +18,11 @@ class Page extends Resource
             'parent_id' => $this->parent_id,
             'template_id' => $this->template_id,
             'has_fixed_template' => $this->has_fixed_template,
-            'contents' => PageContent::collection($this->contents),
-            'media' => Media::collection($this->media),
+            'contents' => ContentResource::collection($this->contents),
+            'media' => MediaResource::collection($this->media),
             'children_count' => $this->when(
-                ! is_null($this->children_count), $this->children_count
+                ! is_null($this->children_count),
+                $this->children_count
             ),
             'is_stand_alone' => $this->is_stand_alone,
             'is_published' => $this->isPublished(),

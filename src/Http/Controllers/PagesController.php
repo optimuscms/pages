@@ -7,7 +7,7 @@ use Optimus\Pages\Models\Page;
 use Illuminate\Routing\Controller;
 use Optimus\Pages\Jobs\UpdatePageUri;
 use Optimus\Pages\Models\PageTemplate;
-use Optimus\Pages\Http\Resources\Page as PageResource;
+use Optimus\Pages\Http\Resources\PageResource;
 
 class PagesController extends Controller
 {

@@ -4,7 +4,7 @@ namespace Optimus\Pages\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class PageTemplate extends Resource
+class TemplateResource extends Resource
 {
     public function toArray($request)
     {

@@ -5,9 +5,9 @@ namespace Optimus\Pages\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Optimus\Pages\Models\PageTemplate;
-use Optimus\Pages\Http\Resources\PageTemplate as PageTemplateResource;
+use Optimus\Pages\Http\Resources\TemplateResource;
 
-class PageTemplatesController extends Controller
+class TemplatesController extends Controller
 {
     /**
      * Display a list of page templates.
@@ -19,6 +19,19 @@ class PageTemplatesController extends Controller
     {
         $templates = PageTemplate::filter($request)->get();
 
-        return PageTemplateResource::collection($templates);
+        return TemplateResource::collection($templates);
+    }
+
+    /**
+     * Display a specified page template.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        $template = PageTemplate::findOrFail($id);
+
+        return new TemplateResource($template);
     }
 }
