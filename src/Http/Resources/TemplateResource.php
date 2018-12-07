@@ -10,8 +10,8 @@ class TemplateResource extends Resource
     {
         return [
             'id' => $this->id,
+            'label' => $this->label,
             'name' => $this->name,
-            'component_name' => $this->component_name,
             'is_selectable' => $this->is_selectable
         ];
     }

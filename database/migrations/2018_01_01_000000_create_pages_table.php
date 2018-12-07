@@ -15,8 +15,8 @@ class CreatePagesTable extends Migration
     {
         Schema::create('page_templates', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('component_name')->unique();
+            $table->string('label');
+            $table->string('name')->unique();
             $table->string('handler');
             $table->boolean('is_selectable')->default(true);
             $table->timestamps();
@@ -28,7 +28,7 @@ class CreatePagesTable extends Migration
             $table->string('slug')->nullable();
             $table->string('uri')->nullable();
             $table->boolean('has_fixed_uri')->default(false);
-            $table->nestedSet();
+            $table->unsignedInteger('parent_id')->index()->nullable();
             $table->unsignedInteger('template_id')->index();
             $table->boolean('has_fixed_template')->default(false);
             $table->boolean('is_stand_alone');

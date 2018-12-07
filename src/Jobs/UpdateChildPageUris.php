@@ -33,13 +33,22 @@ class UpdateChildPageUris implements ShouldQueue
      */
     public function handle()
     {
-        $descendants = $this->page->descendants()
+        $this->updateChildPages($this->page);
+    }
+
+    protected function updateChildPages(Page $parent)
+    {
+        $children = $parent->children()
             ->where('has_fixed_uri', false)
             ->get();
 
-        $descendants->each(function (Page $page) {
-            $page->uri = $page->getUri();
+        $children->each(function (Page $page) use ($parent) {
+            $page->setRelation('parent', $parent);
+
+            $page->uri = $page->generateUri();
             $page->save();
+
+            $this->updateChildPages($page);
         });
     }
 }

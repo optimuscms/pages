@@ -1,4 +1,4 @@
-# Optimus Pages
+# Pages
 
 ## Usage
 

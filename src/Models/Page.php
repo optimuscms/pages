@@ -6,13 +6,12 @@ use Optix\Media\HasMedia;
 use Illuminate\Http\Request;
 use Spatie\Sluggable\HasSlug;
 use Optix\Draftable\Draftable;
-use Kalnoy\Nestedset\NodeTrait;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
-    use Draftable, HasMedia, HasSlug, NodeTrait;
+    use Draftable, HasMedia, HasSlug;
 
     protected $casts = [
         'has_fixed_template' => 'bool',
@@ -44,17 +43,21 @@ class Page extends Model
     {
         return static::where($this->slugOptions->slugField, $slug)
             ->where($this->getKeyName(), '!=', $this->getKey() ?? '0')
-            ->where($this->getParentIdName(), $this->getParentId())
+            ->where('parent_id', $this->parent_id)
             ->withoutGlobalScopes()
             ->exists();
     }
 
-    public function getUri()
+    public function generateUri()
     {
-        return $this->ancestors()
-            ->pluck('slug')
-            ->merge([$this->slug])
-            ->implode('/');
+        $prefix = '';
+        $parent = $this->parent;
+
+        if ($parent && $prefix = $parent->uri) {
+            $prefix .= '/';
+        }
+
+        return $prefix . $this->slug;
     }
 
     public function scopeFilter($query, Request $request)

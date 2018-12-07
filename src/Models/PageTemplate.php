@@ -13,7 +13,7 @@ class PageTemplate extends Model
     ];
 
     protected $fillable = [
-        'name', 'component_name', 'is_selectable'
+        'label', 'name', 'is_selectable'
     ];
 
     public function scopeFilter(Builder $query, Request $request)
