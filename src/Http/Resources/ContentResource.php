@@ -10,7 +10,6 @@ class ContentResource extends Resource
     {
         return [
             'id' => $this->id,
-            'template_id' => $this->template_id,
             'key' => $this->key,
             'value' => $this->value,
             'created_at' => (string) $this->created_at,
