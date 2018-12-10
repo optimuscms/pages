@@ -2,14 +2,18 @@
 
 namespace Optimus\Pages\Tests;
 
+use Optimus\Media\Models\Media;
 use Optimus\Pages\PageServiceProvider;
+use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
     protected function getPackageProviders($app)
     {
-        return [PageServiceProvider::class];
+        return [
+            PageServiceProvider::class
+        ];
     }
 
     protected function getEnvironmentSetUp($app)
@@ -20,5 +24,33 @@ class TestCase extends BaseTestCase
             'database' => ':memory:',
             'prefix' => '',
         ]);
+
+        $app['config']->set('media.model', Media::class);
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->withFactories(__DIR__ . '/../database/factories');
+
+        $schemaBuilder = $this->app['db']->connection()->getSchemaBuilder();
+
+        $schemaBuilder->create('media', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+        });
+
+        $schemaBuilder->create('mediables', function (Blueprint $table) {
+            $table->unsignedInteger('media_id')->index();
+            $table->unsignedInteger('mediable_id')->index();
+            $table->string('mediable_type');
+            $table->string('collection');
+
+            $table->foreign('media_id')
+                  ->references('id')
+                  ->on('media')
+                  ->onDelete('cascade');
+        });
     }
 }
