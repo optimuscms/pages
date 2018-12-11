@@ -88,12 +88,10 @@ class PagesControllerTest extends TestCase
                     'title' => $data['title'],
                     'parent_id' => $data['parent_id'],
                     'template_id' => $data['template_id'],
-                    'contents' => [
-                        [
-                            'key' => 'content',
-                            'value' => $data['content']
-                        ]
-                    ],
+                    'contents' => [[
+                        'key' => 'content',
+                        'value' => $data['content']
+                    ]],
                     'is_published' => $data['is_published']
                 ]
             ]);
@@ -176,12 +174,10 @@ class PagesControllerTest extends TestCase
                     'title' => $newData['title'],
                     'parent_id' => $newData['parent_id'],
                     'template_id' => $newData['template_id'],
-                    'contents' => [
-                        [
-                            'key' => 'content',
-                            'value' => $newData['content']
-                        ]
-                    ],
+                    'contents' => [[
+                        'key' => 'content',
+                        'value' => $newData['content']
+                    ]],
                     'is_stand_alone' => $newData['is_stand_alone'],
                     'is_published' => $newData['is_published']
                 ]
