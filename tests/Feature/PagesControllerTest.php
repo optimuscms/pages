@@ -61,9 +61,39 @@ class PagesControllerTest extends TestCase
     /** @test */
     public function it_can_filter_pages_by_parent()
     {
-        $this->assertTrue(true);
+        $rootPage = factory(Page::class)->create();
+
+        $childPage = factory(Page::class)->create([
+            'parent_id' => $rootPage->id
+        ]);
+
+        $response = $this->getJson(route('pages.index') . '?parent=root');
+
+        $response
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonStructure($expectedJsonStructure = [
+                'data' => [
+                    array_merge($this->expectedJsonStructure(), [
+                        'children_count'
+                    ])
+                ]
+            ])
+            ->assertJson([
+                'data' => [['id' => $rootPage->id]]
+            ]);
+
+        $response = $this->getJson(route('pages.index') . '?parent=' . $rootPage->id);
+
+        $response
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonStructure($expectedJsonStructure)
+            ->assertJson([
+                'data' => [['id' => $childPage->id]]
+            ]);
     }
-    
+
     /** @test */
     public function it_can_create_a_page()
     {
@@ -132,8 +162,6 @@ class PagesControllerTest extends TestCase
                     'updated_at' => (string) $page->updated_at
                 ]
             ]);
-
-        $this->assertTrue(true);
     }
 
     /** @test */
