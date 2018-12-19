@@ -20,7 +20,10 @@ class PageResource extends Resource
             'has_fixed_template' => $this->has_fixed_template,
             'contents' => ContentResource::collection($this->contents),
             'media' => MediaResource::collection($this->media),
-            'meta' => $this->getAllMeta(),
+            'meta' => [
+                'title' => $this->getMeta('title'),
+                'description' => $this->getMeta('description')
+            ],
             'children_count' => $this->when(
                 ! is_null($this->children_count),
                 $this->children_count
