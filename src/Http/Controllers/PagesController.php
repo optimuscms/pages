@@ -44,13 +44,15 @@ class PagesController extends Controller
 
         $page = Page::create([
             'title' => $request->input('title'),
+            'slug' => $request->input('slug'),
             'parent_id' => $request->input('parent_id'),
             'template_id' => $template->id,
             'is_stand_alone' => $request->input('is_stand_alone'),
             'order' => Page::max('order') + 1
         ]);
 
-        UpdatePageUri::dispatch($page);
+        $page->setMeta('title', $request->input('meta.title'));
+        $page->setMeta('description', $request->input('meta.description'));
 
         $template->handler->save($page, $request);
 
@@ -93,7 +95,7 @@ class PagesController extends Controller
 
         $template->handler->validate($request);
 
-        $page->update([
+        $page->fill([
             'title' => $request->input('title'),
             'parent_id' => $request->input('parent_id'),
             'template_id' => $template->id,
@@ -101,8 +103,15 @@ class PagesController extends Controller
         ]);
 
         if (! $page->has_fixed_uri) {
-            UpdatePageUri::dispatch($page);
+            $page->slug = $request->input('slug');
         }
+
+        $page->save();
+
+        $page->syncMeta([
+            'title' => $request->input('meta.title'),
+            'description' => $request->input('meta.description')
+        ]);
 
         $page->detachMedia();
         $page->deleteContents();

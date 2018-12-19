@@ -1,6 +1,6 @@
 <?php
 
-namespace Optimus\Pages;
+namespace Optimus\Pages\Contracts;
 
 use Illuminate\Http\Request;
 use Optimus\Pages\Models\Page;

@@ -16,10 +16,15 @@ class PageResolver
 
     public function resolve()
     {
-        $path = $this->request->path();
-
-        $uri = $path === '/' ? null : $path;
+        $uri = $this->parseUriFromRequest();
 
         return Page::where('uri', $uri)->firstOrFail();
+    }
+
+    protected function parseUriFromRequest()
+    {
+        $path = $this->request->path();
+
+        return $path === '/' ? null : $path;
     }
 }

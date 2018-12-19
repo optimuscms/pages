@@ -3,16 +3,22 @@
 namespace Optimus\Pages\Models;
 
 use Optix\Media\HasMedia;
+use Plank\Metable\Metable;
 use Illuminate\Http\Request;
 use Spatie\Sluggable\HasSlug;
 use Optix\Draftable\Draftable;
 use Kalnoy\Nestedset\NodeTrait;
 use Spatie\Sluggable\SlugOptions;
+use Optimus\Pages\Jobs\UpdatePageUri;
 use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
-    use Draftable, HasMedia, HasSlug, NodeTrait;
+    use Draftable,
+        HasMedia,
+        HasSlug,
+        Metable,
+        NodeTrait;
 
     protected $casts = [
         'has_fixed_template' => 'bool',
@@ -26,6 +32,17 @@ class Page extends Model
     protected $fillable = [
         'title', 'slug', 'template_id', 'parent_id', 'is_stand_alone', 'order'
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::saved(function ($page) {
+            if (! $page->has_fixed_uri) {
+                UpdatePageUri::dispatch($page);
+            }
+        });
+    }
 
     public function getSlugOptions(): SlugOptions
     {
