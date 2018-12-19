@@ -171,7 +171,7 @@ class PagesControllerTest extends TestCase
             'title' => 'Old title',
             'slug' => 'old-title',
             'parent_id' => null,
-            'template_id' => factory(PageTemplate::class)->create(),
+            'template_id' => factory(PageTemplate::class)->create()->id,
             'is_stand_alone' => true,
             'order' => 1,
             'published_at' => null

@@ -33,10 +33,10 @@ class UpdateChildPageUris
      */
     public function handle()
     {
-        $this->updateChildPages($this->page);
+        $this->updateChildPageUris($this->page);
     }
 
-    protected function updateChildPages(Page $parent)
+    protected function updateChildPageUris(Page $parent)
     {
         $children = $parent->children()
             ->where('has_fixed_uri', false)
