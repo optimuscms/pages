@@ -51,6 +51,8 @@ class PagesController extends Controller
             'order' => Page::max('order') + 1
         ]);
 
+        UpdatePageUri::dispatch($page);
+
         $page->setMeta('title', $request->input('meta.title'));
         $page->setMeta('description', $request->input('meta.description'));
 
@@ -95,18 +97,19 @@ class PagesController extends Controller
 
         $template->handler->validate($request);
 
-        $page->fill([
+        $page->update([
             'title' => $request->input('title'),
+            'slug' => ! $page->has_fixed_uri
+                ? $request->input('slug')
+                : $page->slug,
             'parent_id' => $request->input('parent_id'),
             'template_id' => $template->id,
             'is_stand_alone' => $request->input('is_stand_alone')
         ]);
 
         if (! $page->has_fixed_uri) {
-            $page->slug = $request->input('slug');
+            UpdatePageUri::dispatch($page);
         }
-
-        $page->save();
 
         $page->syncMeta([
             'title' => $request->input('meta.title'),

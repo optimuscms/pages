@@ -33,17 +33,6 @@ class Page extends Model
         'title', 'slug', 'template_id', 'parent_id', 'is_stand_alone', 'order'
     ];
 
-    public static function boot()
-    {
-        parent::boot();
-
-        static::saved(function ($page) {
-            if (! $page->has_fixed_uri) {
-                UpdatePageUri::dispatch($page);
-            }
-        });
-    }
-
     public function getSlugOptions(): SlugOptions
     {
         $options = SlugOptions::create()
