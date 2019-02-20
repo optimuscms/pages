@@ -46,19 +46,18 @@ class PageTest extends TestCase
     /** @test */
     public function it_can_generate_a_uri()
     {
-        $page = new Page();
+        $parentPage = new Page();
+        $parentPage->slug = 'foo';
+        $parentPage->parent = null;
+        $parentPage->uri = $parentPage->generateUri();
 
-        $page->parent = null;
-        $page->slug = 'baz';
+        $this->assertEquals('foo', $parentPage->uri);
 
-        $this->assertEquals('baz', $page->generateUri());
+        $childPage = new Page();
+        $childPage->slug = 'bar';
+        $childPage->setRelation('parent', $parentPage);
 
-        $parent = new Page();
-        $parent->uri = 'foo/bar';
-
-        $page->parent = $parent;
-
-        $this->assertEquals('foo/bar/baz', $page->generateUri());
+        $this->assertEquals('foo/bar', $childPage->generateUri());
     }
 
     /** @test */
