@@ -2,50 +2,15 @@
 
 namespace Optimus\Pages\Tests\Unit;
 
+use Mockery;
 use Optimus\Pages\Models\Page;
 use Optimus\Pages\Tests\TestCase;
+use Optimus\Pages\Models\PageContent;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PageTest extends TestCase
 {
-    /**
-     * @test
-     * @dataProvider castToBooleanProvider
-     */
-    public function it_casts_the_has_fixed_template_attribute_to_a_boolean($value, bool $expected)
-    {
-        $page = new Page();
-
-        $page->has_fixed_template = $value;
-
-        $this->assertEquals($expected, $page->has_fixed_template);
-    }
-
-    /**
-     * @test
-     * @dataProvider castToBooleanProvider
-     */
-    public function it_casts_the_has_is_stand_alone_attribute_to_a_boolean($value, bool $expected)
-    {
-        $page = new Page();
-
-        $page->is_stand_alone = $value;
-
-        $this->assertEquals($expected, $page->is_stand_alone);
-    }
-
-    public function castToBooleanProvider()
-    {
-        return [
-            [ 1, true ],
-            [ 'false', true ],
-            [ 0, false ],
-            [ '0', false ],
-            [ '', false ]
-        ];
-    }
-
     /** @test */
     public function it_registers_the_template_relationship()
     {
@@ -76,5 +41,73 @@ class PageTest extends TestCase
         $page = new Page();
 
         $this->assertInstanceOf(HasMany::class, $page->contents());
+    }
+
+    /** @test */
+    public function it_can_add_contents()
+    {
+        $page = Mockery::mock(Page::class)->makePartial();
+
+        $relationship = Mockery::mock(HasMany::class);
+
+        $relationship->shouldReceive('createMany')->once()->with([[
+            'key' => 'foo',
+            'value' => 'bar'
+        ], [
+            'key' => 'bar',
+            'value' => 'foo'
+        ]])->andReturnTrue();
+
+        $page->shouldReceive('contents')->once()->andReturn($relationship);
+
+        $page->addContents([
+            'foo' => 'bar',
+            'bar' => 'foo'
+        ]);
+    }
+    
+    /** @test */
+    public function it_can_determine_if_a_piece_of_content_exists()
+    {
+        $page = new Page();
+
+        $page->setRelation('contents', $page->newCollection([
+            new PageContent([
+                'key' => 'foo',
+                'value' => 'bar'
+            ])
+        ]));
+
+        $this->assertTrue($page->hasContent('foo'));
+        $this->assertFalse($page->hasContent('bar'));
+    }
+
+    /** @test */
+    public function it_can_get_the_value_of_a_piece_of_content()
+    {
+        $page = new Page();
+
+        $page->setRelation('contents', $page->newCollection([
+            new PageContent([
+                'key' => 'foo',
+                'value' => 'bar'
+            ])
+        ]));
+
+        $this->assertEquals('bar', $page->getContent('foo'));
+    }
+    
+    /** @test */
+    public function it_can_delete_all_of_its_contents()
+    {
+        $page = Mockery::mock(Page::class)->makePartial();
+
+        $relationship = Mockery::mock(HasMany::class);
+
+        $relationship->shouldReceive('delete')->once()->andReturnTrue();
+
+        $page->shouldReceive('contents')->once()->andReturn($relationship);
+
+        $page->deleteContents();
     }
 }
