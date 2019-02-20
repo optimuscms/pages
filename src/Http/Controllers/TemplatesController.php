@@ -17,7 +17,9 @@ class TemplatesController extends Controller
      */
     public function index(Request $request)
     {
-        $templates = PageTemplate::filter($request)->get();
+        $templates = PageTemplate::filter($request)
+            ->orderBy('name')
+            ->get();
 
         return TemplateResource::collection($templates);
     }
