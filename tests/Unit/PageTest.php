@@ -44,12 +44,29 @@ class PageTest extends TestCase
     }
 
     /** @test */
+    public function it_can_generate_a_uri()
+    {
+        $page = new Page();
+
+        $page->parent = null;
+        $page->slug = 'baz';
+
+        $this->assertEquals('baz', $page->generateUri());
+
+        $parent = new Page();
+        $parent->uri = 'foo/bar';
+
+        $page->parent = $parent;
+
+        $this->assertEquals('foo/bar/baz', $page->generateUri());
+    }
+
+    /** @test */
     public function it_can_add_contents()
     {
         $page = Mockery::mock(Page::class)->makePartial();
 
         $relationship = Mockery::mock(HasMany::class);
-
         $relationship->shouldReceive('createMany')->once()->with([[
             'key' => 'foo',
             'value' => 'bar'
@@ -103,7 +120,6 @@ class PageTest extends TestCase
         $page = Mockery::mock(Page::class)->makePartial();
 
         $relationship = Mockery::mock(HasMany::class);
-
         $relationship->shouldReceive('delete')->once()->andReturnTrue();
 
         $page->shouldReceive('contents')->once()->andReturn($relationship);
