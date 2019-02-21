@@ -22,7 +22,7 @@ class PageTemplate extends Model
     {
         // Selectable
         if ($request->filled('is_selectable')) {
-            $query->where('is_selectable', $request->input('is_selectable'));
+            $query->where('is_selectable', (bool) $request->input('is_selectable'));
         }
     }
 

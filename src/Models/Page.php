@@ -55,12 +55,12 @@ class Page extends Model
 
     public static function findByUri($uri)
     {
-        return static::query()->whereUri($uri)->first();
+        return static::whereUri($uri)->first();
     }
 
     public static function findByUriOrFail($uri)
     {
-        return static::query()->whereUri($uri)->firstOrFail();
+        return static::whereUri($uri)->firstOrFail();
     }
 
     public function getSlugOptions(): SlugOptions
