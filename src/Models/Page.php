@@ -106,13 +106,15 @@ class Page extends Model
         });
     }
 
-    public function getContent($key)
+    public function getContent($key, $default = null)
     {
         if (! $this->hasContent($key)) {
-            return null;
+            return $default;
         }
 
-        return $this->contents->firstWhere('key', $key)->value;
+        $content = $this->contents->firstWhere('key', $key);
+
+        return $content->value;
     }
 
     public function deleteContents()
