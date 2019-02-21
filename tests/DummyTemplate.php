@@ -17,8 +17,6 @@ class DummyTemplate implements Template
 
     public function save(Page $page, Request $request)
     {
-        $page->addContents(
-            $request->only('content')
-        );
+        $page->addContents($request->only('content'));
     }
 }

@@ -8,10 +8,13 @@ use Spatie\Sluggable\HasSlug;
 use Optix\Draftable\Draftable;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Page extends Model
 {
-    use Draftable, HasMedia, HasSlug;
+    use Draftable,
+        HasMedia,
+        HasSlug;
 
     protected $casts = [
         'has_fixed_template' => 'bool',
@@ -23,8 +26,22 @@ class Page extends Model
     protected $dates = ['published_at'];
 
     protected $fillable = [
-        'title', 'slug', 'template_id', 'parent_id', 'is_stand_alone', 'order'
+        'title',
+        'slug',
+        'template_id',
+        'parent_id',
+        'is_stand_alone',
+        'order'
     ];
+
+    public function scopeFilter(Builder $query, Request $request)
+    {
+        // Parent
+        if ($request->filled('parent')) {
+            $parent = $request->input('parent');
+            $query->where('parent_id', $parent === 'root' ? null : $parent);
+        }
+    }
 
     public function getSlugOptions(): SlugOptions
     {
@@ -51,6 +68,7 @@ class Page extends Model
     public function generateUri()
     {
         $prefix = '';
+
         $parent = $this->parent;
 
         if ($parent && $prefix = $parent->uri) {
@@ -58,15 +76,6 @@ class Page extends Model
         }
 
         return $prefix . $this->slug;
-    }
-
-    public function scopeFilter($query, Request $request)
-    {
-        // Parent
-        if ($request->filled('parent')) {
-            $parent = $request->input('parent');
-            $query->where('parent_id', $parent === 'root' ? null : $parent);
-        }
     }
 
     public function addContents(array $contents)
