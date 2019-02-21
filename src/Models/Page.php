@@ -65,6 +65,13 @@ class Page extends Model
             ->exists();
     }
 
+    public static function findByUriOrFail($uri)
+    {
+        $uri = (! $uri || $uri === '/') ? null : $uri;
+
+        return static::query()->where('uri', $uri)->firstOrFail();
+    }
+
     public function generateUri()
     {
         $prefix = '';
