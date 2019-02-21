@@ -43,6 +43,26 @@ class Page extends Model
         }
     }
 
+    public function scopeWhereUri(Builder $query, $uri)
+    {
+        $query->where('uri', $this->prepareUri($uri));
+    }
+
+    protected function prepareUri($uri)
+    {
+        return (! $uri || $uri === '/') ? null : $uri;
+    }
+
+    public static function findByUri($uri)
+    {
+        return static::query()->whereUri($uri)->first();
+    }
+
+    public static function findByUriOrFail($uri)
+    {
+        return static::query()->whereUri($uri)->firstOrFail();
+    }
+
     public function getSlugOptions(): SlugOptions
     {
         $options = SlugOptions::create()
@@ -63,13 +83,6 @@ class Page extends Model
             ->where('parent_id', $this->parent_id)
             ->withoutGlobalScopes()
             ->exists();
-    }
-
-    public static function findByUriOrFail($uri)
-    {
-        $uri = (! $uri || $uri === '/') ? null : $uri;
-
-        return static::query()->where('uri', $uri)->firstOrFail();
     }
 
     public function generateUri()
