@@ -12,7 +12,7 @@ class TemplatesController extends Controller
 
     public function __construct(TemplateManager $templates)
     {
-        $this->templates = $templates->registered();
+        $this->templates = $templates;
     }
 
     /**
@@ -22,13 +22,10 @@ class TemplatesController extends Controller
      */
     public function index()
     {
-        $templates = $this->templates->selectable()
-            ->sortBy(function (Template $template) {
-                return $template->name;
-            });
+        $templates = $this->templates->selectable()->toArray();
 
         return response()->json([
-            'data' => $templates->toArray()
+            'data' => $templates
         ]);
     }
 }

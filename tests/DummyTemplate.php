@@ -2,12 +2,17 @@
 
 namespace Optimus\Pages\Tests;
 
+use Optimus\Pages\Template;
 use Illuminate\Http\Request;
 use Optimus\Pages\Models\Page;
-use Optimus\Pages\Contracts\Template;
 
-class DummyTemplate implements Template
+class DummyTemplate extends Template
 {
+    public function name(): string
+    {
+        return 'dummy';
+    }
+
     public function validate(Request $request)
     {
         $request->validate([

@@ -2,19 +2,21 @@
 
 namespace Optimus\Pages;
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Optimus\Pages\Models\Page;
 
 abstract class Template
 {
-    public $name;
+    abstract public function name(): string;
 
-    public $isSelectable = false;
-
-    public function label()
+    public function label(): string
     {
-        return Str::title(Str::snake($this->name, ' '));
+        return title_case(snake_case($this->name(), ' '));
+    }
+
+    public function isSelectable(): bool
+    {
+        return true;
     }
 
     abstract public function validate(Request $request);
@@ -24,9 +26,9 @@ abstract class Template
     public function toArray()
     {
         return [
-            'name' => $this->name,
+            'name' => $this->name(),
             'label' => $this->label(),
-            'is_selectable' => $this->isSelectable
+            'is_selectable' => $this->isSelectable()
         ];
     }
 }

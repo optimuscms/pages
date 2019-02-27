@@ -2,22 +2,41 @@
 
 namespace Optimus\Pages\Http\Controllers;
 
+use Optimus\Pages\Template;
 use Illuminate\Http\Request;
 use Optimus\Pages\Models\Page;
 use Illuminate\Routing\Controller;
-use Optimus\Pages\Jobs\UpdatePageUri;
-use Optimus\Pages\Models\PageTemplate;
-use Optimus\Pages\Http\Resources\PageResource;
 use Optimus\Pages\TemplateManager;
+use Optimus\Pages\Jobs\UpdatePageUri;
+use Optimus\Pages\Http\Resources\PageResource;
+
+class DefaultTemplate extends Template
+{
+    public function name(): string
+    {
+        return 'name';
+    }
+
+    public function validate(Request $request)
+    {
+        //
+    }
+
+    public function save(Page $page, Request $request)
+    {
+        //
+    }
+}
 
 class PagesController extends Controller
 {
-    /**
-     * Display a list of pages.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+    protected $templates;
+
+    public function __construct(TemplateManager $templates)
+    {
+        $this->templates = $templates;
+    }
+
     public function index(Request $request)
     {
         $pages = Page::withDrafts()
@@ -29,17 +48,11 @@ class PagesController extends Controller
         return PageResource::collection($pages);
     }
 
-    /**
-     * Create a new page.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function store(Request $request, TemplateManager $templates)
+    public function store(Request $request)
     {
         $this->validatePage($request);
 
-        $template = $templates->registered()->find(
+        $template = $this->templates->find(
             $request->input('template')
         );
 
@@ -64,12 +77,6 @@ class PagesController extends Controller
         return new PageResource($page);
     }
 
-    /**
-     * Display the specified page.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function show($id)
     {
         $page = Page::withDrafts()->findOrFail($id);
@@ -77,31 +84,24 @@ class PagesController extends Controller
         return new PageResource($page);
     }
 
-    /**
-     * Update the specified page.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function update(Request $request, TemplateManager $templates, $id)
     {
         $page = Page::withDrafts()->findOrFail($id);
 
         $this->validatePage($request);
 
-        $template = $templates->registered()->find(
-            ! $page->has_fixed_template
-                ? $request->input('template')
-                : $page->template
-        );
+        $templateName = ! $page->has_fixed_template
+            ? $request->input('template')
+            : $page->template;
+
+        $template = $templates->find($templateName);
 
         $template->validate($request);
 
         $page->update([
             'title' => $request->input('title'),
+            'template' => $templateName,
             'parent_id' => $request->input('parent_id'),
-            'template_id' => $template->id,
             'is_stand_alone' => $request->input('is_stand_alone')
         ]);
 
@@ -123,12 +123,6 @@ class PagesController extends Controller
         return new PageResource($page);
     }
 
-    /**
-     * Reorder a specified list of pages.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function reorder(Request $request)
     {
         $request->validate([
@@ -149,32 +143,27 @@ class PagesController extends Controller
         return response(null, 204);
     }
 
-    /**
-     * Delete the specified page.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        Page::withDrafts()
-            ->where('is_deletable', true)
-            ->findOrFail($id)
-            ->delete();
+        $page = Page::withDrafts()
+            ->deletable()
+            ->findOrFail($id);
+
+        $page->delete();
 
         return response(null, 204);
     }
 
-    /**
-     * Validate the request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     */
     protected function validatePage(Request $request)
     {
+        $selectableTemplateNames = $this->templates
+            ->selectable()
+            ->pluck('name')
+            ->implode(',');
+
         $request->validate([
             'title' => 'required',
-            'template_id' => 'required|exists:page_templates,id',
+            'template' => 'required|in:',
             'parent_id' => 'exists:pages,id|nullable',
             'is_stand_alone' => 'present|boolean',
             'is_published' => 'present|boolean'

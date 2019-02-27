@@ -13,7 +13,7 @@ class TemplateCollection extends Collection
 
     public function selectable()
     {
-        return $this->filter(function (Template $template) {
+        return $this->where(function (Template $template) {
             return $template->isSelectable;
         });
     }

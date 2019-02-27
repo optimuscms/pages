@@ -2,12 +2,12 @@
 
 namespace Optimus\Pages\Models;
 
-use Optimus\Pages\TemplateManager;
 use Optix\Media\HasMedia;
 use Illuminate\Http\Request;
 use Spatie\Sluggable\HasSlug;
 use Optix\Draftable\Draftable;
 use Spatie\Sluggable\SlugOptions;
+use Optimus\Pages\TemplateManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -42,6 +42,11 @@ class Page extends Model
             $parent = $request->input('parent');
             $query->where('parent_id', $parent === 'root' ? null : $parent);
         }
+    }
+
+    public function scopeDeletable(Builder $query)
+    {
+        return $query->where('is_deletable', true);
     }
 
     public function scopeWhereUri(Builder $query, $uri)
