@@ -93,9 +93,7 @@ class Page extends Model
 
     public function getTemplateHandlerAttribute()
     {
-        return app(TemplateManager::class)
-            ->getTemplates()
-            ->find($this->template);
+        return app(TemplateManager::class)->find($this->template);
     }
 
     public function generateUri()

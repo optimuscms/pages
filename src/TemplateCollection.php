@@ -14,18 +14,18 @@ class TemplateCollection extends Collection
     public function selectable()
     {
         return $this->where(function (Template $template) {
-            return $template->isSelectable;
+            return $template->isSelectable();
         });
     }
 
     public function find(string $name)
     {
         $value = $this->first(function (Template $template) use ($name) {
-            return $template->name === $name;
+            return $template->name() === $name;
         });
 
         if (! $value) {
-            // throw Exception();
+            // throw new Exception();
         }
 
         return $value;

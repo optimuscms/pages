@@ -18,7 +18,7 @@ class TemplateManager
     }
 
     /**
-     * Get all of the registered templates.
+     * Get all the registered templates.
      *
      * @return \Optimus\Pages\TemplateCollection
      */
@@ -28,7 +28,7 @@ class TemplateManager
     }
 
     /**
-     * Get all of the selectable templates.
+     * Get all the selectable templates.
      *
      * @return \Optimus\Pages\TemplateCollection
      */
@@ -38,7 +38,7 @@ class TemplateManager
     }
 
     /**
-     * Get the template with the given name.
+     * Get the first template with the given name.
      *
      * @param  string  $name
      * @return \Optimus\Pages\Template
@@ -49,7 +49,7 @@ class TemplateManager
     }
 
     /**
-     * Register a template.
+     * Register a template class.
      *
      * @param  string  $class
      * @return void
@@ -70,7 +70,7 @@ class TemplateManager
     }
 
     /**
-     * Register multiple templates.
+     * Register multiple template classes.
      *
      * @param  array  $classes
      * @return void
