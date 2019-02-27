@@ -2,6 +2,7 @@
 
 namespace Optimus\Pages\Models;
 
+use Optimus\Pages\TemplateManager;
 use Optix\Media\HasMedia;
 use Illuminate\Http\Request;
 use Spatie\Sluggable\HasSlug;
@@ -28,7 +29,7 @@ class Page extends Model
     protected $fillable = [
         'title',
         'slug',
-        'template_id',
+        'template',
         'parent_id',
         'is_stand_alone',
         'order'
@@ -83,6 +84,13 @@ class Page extends Model
             ->where('parent_id', $this->parent_id)
             ->withoutGlobalScopes()
             ->exists();
+    }
+
+    public function getTemplateHandlerAttribute()
+    {
+        return app(TemplateManager::class)
+            ->getTemplates()
+            ->find($this->template);
     }
 
     public function generateUri()
@@ -143,11 +151,6 @@ class Page extends Model
     public function children()
     {
         return $this->hasMany(Page::class, 'parent_id');
-    }
-
-    public function template()
-    {
-        return $this->belongsTo(PageTemplate::class);
     }
 
     public function contents()

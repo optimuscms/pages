@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Optimus\Pages\Jobs\UpdatePageUri;
 use Optimus\Pages\Models\PageTemplate;
 use Optimus\Pages\Http\Resources\PageResource;
+use Optimus\Pages\TemplateManager;
 
 class PagesController extends Controller
 {
@@ -34,18 +35,20 @@ class PagesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request, TemplateManager $templates)
     {
         $this->validatePage($request);
 
-        $template = PageTemplate::find($request->input('template_id'));
+        $template = $templates->registered()->find(
+            $request->input('template')
+        );
 
-        $template->handler->validate($request);
+        $template->validate($request);
 
         $page = Page::create([
             'title' => $request->input('title'),
+            'template' => $template->name,
             'parent_id' => $request->input('parent_id'),
-            'template_id' => $template->id,
             'is_stand_alone' => $request->input('is_stand_alone'),
             'order' => Page::max('order') + 1
         ]);
@@ -81,17 +84,19 @@ class PagesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, TemplateManager $templates, $id)
     {
         $page = Page::withDrafts()->findOrFail($id);
 
         $this->validatePage($request);
 
-        $template = ! $page->has_fixed_template
-            ? PageTemplate::find($request->input('template_id'))
-            : $page->template;
+        $template = $templates->registered()->find(
+            ! $page->has_fixed_template
+                ? $request->input('template')
+                : $page->template
+        );
 
-        $template->handler->validate($request);
+        $template->validate($request);
 
         $page->update([
             'title' => $request->input('title'),
@@ -107,7 +112,7 @@ class PagesController extends Controller
         $page->detachMedia();
         $page->deleteContents();
 
-        $template->handler->save($page, $request);
+        $template->save($page, $request);
 
         if ($page->isDraft() && $request->input('is_published')) {
             $page->publish();
