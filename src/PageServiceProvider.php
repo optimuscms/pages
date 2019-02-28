@@ -19,11 +19,7 @@ class PageServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->instance(TemplateRepository::class, function () {
-            return new TemplateRepository(
-                $this->app['config']->get('pages.templates')
-            );
-        });
+        $this->app->singleton(TemplateRepository::class);
     }
 
     protected function registerAdminRoutes()
@@ -31,14 +27,14 @@ class PageServiceProvider extends ServiceProvider
         $this->app['router']
              ->name('admin.')
              ->namespace($this->controllerNamespace)
-             ->middleware('web', 'auth:admin')
+             ->middleware('web'/*, 'auth:admin' */)
              ->group(function ($router) {
                  // Pages
                  $router->apiResource('pages', 'PagesController');
                  $router->patch('pages', 'PagesController@reorder');
 
                  // Templates
-                 $router->apiResource('page-templates', 'PagesController')
+                 $router->apiResource('page-templates', 'TemplatesController')
                         ->only(['index', 'show']);
              });
     }

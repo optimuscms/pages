@@ -3,37 +3,22 @@
 namespace Optimus\Pages\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use Optimus\Pages\TemplateManager;
+use Optimus\Pages\TemplateRepository;
 
 class TemplatesController extends Controller
 {
-    protected $templates;
-
-    public function __construct(TemplateManager $templates)
-    {
-        $this->templates = $templates;
-    }
-
     /**
      * Display a list of page templates.
      *
+     * @param  \Optimus\Pages\TemplateRepository  $templates
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(TemplateRepository $templates)
     {
-        $this->templates->all();
-        $this->templates->selectable();
-        $this->templates->get($name);
-
-        collect($this->templates->getSelectable())
-            ->map(function ($template) {
-                $template->toArray();
-            });
-
-        $templates = $this->templates->selectable()->toArray();
+        $templates = collect($templates->selectable());
 
         return response()->json([
-            'data' => $templates
+            'data' => $templates->map->toArray()
         ]);
     }
 }

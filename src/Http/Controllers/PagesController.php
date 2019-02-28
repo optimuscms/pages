@@ -6,36 +6,12 @@ use Optimus\Pages\Template;
 use Illuminate\Http\Request;
 use Optimus\Pages\Models\Page;
 use Illuminate\Routing\Controller;
-use Optimus\Pages\TemplateManager;
 use Optimus\Pages\Jobs\UpdatePageUri;
 use Optimus\Pages\Http\Resources\PageResource;
-
-class DefaultTemplate extends Template
-{
-    public function name(): string
-    {
-        return 'name';
-    }
-
-    public function validate(Request $request)
-    {
-        //
-    }
-
-    public function save(Page $page, Request $request)
-    {
-        //
-    }
-}
 
 class PagesController extends Controller
 {
     protected $templates;
-
-    public function __construct(TemplateManager $templates)
-    {
-        $this->templates = $templates;
-    }
 
     public function index(Request $request)
     {
@@ -157,7 +133,7 @@ class PagesController extends Controller
     protected function validatePage(Request $request)
     {
         $selectableTemplateNames = $this->templates
-            ->selectable()
+            ->all()
             ->pluck('name')
             ->implode(',');
 

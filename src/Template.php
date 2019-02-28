@@ -20,7 +20,7 @@ abstract class Template
      *
      * @var bool
      */
-    public $isSelectable = true;
+    public $selectable = true;
 
     /**
      * Get the template's label.
@@ -60,8 +60,7 @@ abstract class Template
     {
         return [
             'name' => $this->name,
-            'label' => $this->label(),
-            'is_selectable' => $this->isSelectable
+            'label' => $this->label()
         ];
     }
 }
