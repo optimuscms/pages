@@ -2,7 +2,6 @@
 
 namespace Optimus\Pages\Http\Controllers;
 
-use Optimus\Pages\Template;
 use Illuminate\Routing\Controller;
 use Optimus\Pages\TemplateManager;
 
@@ -22,6 +21,15 @@ class TemplatesController extends Controller
      */
     public function index()
     {
+        $this->templates->all();
+        $this->templates->selectable();
+        $this->templates->get($name);
+
+        collect($this->templates->getSelectable())
+            ->map(function ($template) {
+                $template->toArray();
+            });
+
         $templates = $this->templates->selectable()->toArray();
 
         return response()->json([
