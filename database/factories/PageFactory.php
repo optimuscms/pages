@@ -2,15 +2,13 @@
 
 use Faker\Generator as Faker;
 use Optimus\Pages\Models\Page;
-use Optimus\Pages\Models\PageTemplate;
+use Optimus\Pages\TemplateRepository;
 
 $factory->define(Page::class, function (Faker $faker) {
     return [
         'title' => $faker->sentence,
         'parent_id' => null,
-        'template_id' => function () {
-            return factory(PageTemplate::class)->create()->id;
-        },
+        'template' => 'default',
         'is_stand_alone' => false,
         'published_at' => now(),
         'order' => Page::max('order') + 1

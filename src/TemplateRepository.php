@@ -29,11 +29,11 @@ class TemplateRepository
      */
     public function selectable()
     {
-        return Arr::where(
+        return array_values(Arr::where(
             $this->templates, function (Template $template) {
                 return $template->selectable;
             }
-        );
+        ));
     }
 
     /**
@@ -73,10 +73,10 @@ class TemplateRepository
     /**
      * Register multiple template classes.
      *
-     * @param  \Optimus\Pages\Template[]  $templates
+     * @param  array  $templates
      * @return void
      */
-    public function registerMany(Template ...$templates)
+    public function registerMany(array $templates)
     {
         foreach ($templates as $template) {
             $this->register($template);
