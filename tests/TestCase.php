@@ -53,4 +53,30 @@ class TestCase extends BaseTestCase
                   ->onDelete('cascade');
         });
     }
+
+    public function expectedPageJsonStructure()
+    {
+        return [
+            'id',
+            'title',
+            'slug',
+            'uri',
+            'has_fixed_uri',
+            'parent_id',
+            'template',
+            'has_fixed_template',
+            'contents' => [
+                '*' => [
+                    'key',
+                    'value'
+                ]
+            ],
+            'media' => [],
+            'is_stand_alone',
+            'is_published',
+            'is_deletable',
+            'created_at',
+            'updated_at'
+        ];
+    }
 }

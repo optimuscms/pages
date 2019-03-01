@@ -2,16 +2,21 @@
 
 namespace Optimus\Pages\Http\Controllers;
 
-use Optimus\Pages\Template;
 use Illuminate\Http\Request;
 use Optimus\Pages\Models\Page;
 use Illuminate\Routing\Controller;
 use Optimus\Pages\Jobs\UpdatePageUri;
+use Optimus\Pages\TemplateRepository;
 use Optimus\Pages\Http\Resources\PageResource;
 
 class PagesController extends Controller
 {
     protected $templates;
+
+    public function __construct(TemplateRepository $templates)
+    {
+        $this->templates = $templates;
+    }
 
     public function index(Request $request)
     {
@@ -39,12 +44,13 @@ class PagesController extends Controller
             'template' => $template->name,
             'parent_id' => $request->input('parent_id'),
             'is_stand_alone' => $request->input('is_stand_alone'),
+            'is_deletable' => true,
             'order' => Page::max('order') + 1
         ]);
 
         UpdatePageUri::dispatch($page);
 
-        $template->handler->save($page, $request);
+        $template->save($page, $request);
 
         if ($request->input('is_published')) {
             $page->publish();
@@ -134,14 +140,10 @@ class PagesController extends Controller
 
     protected function validatePage(Request $request)
     {
-//        $selectableTemplateNames = $this->templates
-//            ->all()
-//            ->pluck('name')
-//            ->implode(',');
-
         $request->validate([
             'title' => 'required',
-            'template' => 'required|in:',
+            // Todo: validate template...
+            //'template' => 'required|in:1,2,3',
             'parent_id' => 'exists:pages,id|nullable',
             'is_stand_alone' => 'present|boolean',
             'is_published' => 'present|boolean'
