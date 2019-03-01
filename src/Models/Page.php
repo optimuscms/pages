@@ -27,12 +27,7 @@ class Page extends Model
     protected $dates = ['published_at'];
 
     protected $fillable = [
-        'title',
-        'slug',
-        'template',
-        'parent_id',
-        'is_stand_alone',
-        'order'
+        'title', 'slug', 'template', 'parent_id', 'is_stand_alone', 'order'
     ];
 
     public function scopeFilter(Builder $query, Request $request)
@@ -93,7 +88,7 @@ class Page extends Model
 
     public function getTemplateHandlerAttribute()
     {
-        return app(TemplateManager::class)->find($this->template);
+        return app(TemplateStore::class)->find($this->template);
     }
 
     public function generateUri()

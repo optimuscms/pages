@@ -38,14 +38,89 @@ class GetPagesTest extends TestCase
     /** @test */
     public function it_can_filter_pages_by_their_parent()
     {
-        $this->assertTrue(true);
+        $parentPage = factory(Page::class)->create();
+        $childPages = factory(Page::class, 2)->create([
+            'parent_id' => $parentPage->id
+        ]);
+
+        $response = $this->getJson(
+            route('admin.pages.index') . "?parent={$parentPage->id}"
+        );
+
+        $response
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => $this->expectedJsonStructure()
+                ]
+            ]);
+
+        $ids = $response->decodeResponseJson('data.*.id');
+
+        $childPages->each(function (Page $page) use ($ids) {
+            $this->assertContains($page->id, $ids);
+        });
+    }
+
+    /** @test */
+    public function it_can_display_a_specific_page_template()
+    {
+        $page = factory(Page::class)->create()->fresh();
+
+        $response = $this->getJson(route('admin.pages.show', [
+            'id' => $page->id
+        ]));
+
+        $response
+            ->assertOk()
+            ->assertJsonStructure([
+                'data' => $this->expectedJsonStructure()
+            ])
+            ->assertJson([
+                'data' =>[
+                    'id' => $page->id,
+                    'title' => $page->title,
+                    'slug' => $page->slug,
+                    'uri' => $page->uri,
+                    'has_fixed_uri' => $page->has_fixed_uri,
+                    'parent_id' => $page->parent_id,
+                    'template' => $page->template,
+                    'has_fixed_template' => $page->has_fixed_template,
+                    'contents' => [],
+                    'media' => [],
+                    'is_stand_alone' => $page->is_stand_alone,
+                    'is_published' => $page->isPublished(),
+                    'is_deletable' => $page->is_deletable,
+                    'created_at' => (string) $page->created_at,
+                    'updated_at' => (string) $page->updated_at
+                ]
+            ]);
     }
 
     protected function expectedJsonStructure()
     {
         return [
             'id',
-            //
+            'title',
+            'slug',
+            'uri',
+            'has_fixed_uri',
+            'parent_id',
+            'template',
+            'has_fixed_template',
+            'contents' => [
+                '*' => [
+                    'key',
+                    'value'
+                ]
+            ],
+            'media' => [],
+            'is_stand_alone',
+            'is_published',
+            'is_deletable',
+            'created_at',
+            'updated_at'
         ];
     }
 }

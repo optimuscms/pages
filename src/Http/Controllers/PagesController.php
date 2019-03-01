@@ -121,9 +121,11 @@ class PagesController extends Controller
 
     public function destroy($id)
     {
-        $page = Page::withDrafts()
-            ->deletable()
-            ->findOrFail($id);
+        $page = Page::withDrafts()->findOrFail($id);
+
+        if (! $page->is_deletable) {
+            abort(403);
+        }
 
         $page->delete();
 
@@ -132,10 +134,10 @@ class PagesController extends Controller
 
     protected function validatePage(Request $request)
     {
-        $selectableTemplateNames = $this->templates
-            ->all()
-            ->pluck('name')
-            ->implode(',');
+//        $selectableTemplateNames = $this->templates
+//            ->all()
+//            ->pluck('name')
+//            ->implode(',');
 
         $request->validate([
             'title' => 'required',

@@ -35,7 +35,7 @@ abstract class Template
     }
 
     /**
-     * Validate the request parameters.
+     * Validate the request data.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return void
@@ -43,7 +43,7 @@ abstract class Template
     abstract public function validate(Request $request);
 
     /**
-     * Save the request parameters to the page.
+     * Save the request data to the page.
      *
      * @param  \Optimus\Pages\Models\Page  $page
      * @param  \Illuminate\Http\Request  $request
