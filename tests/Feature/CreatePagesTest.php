@@ -3,7 +3,6 @@
 namespace Optimus\Pages\Tests\Feature;
 
 use Optimus\Pages\Tests\TestCase;
-use Optimus\Pages\TemplateRepository;
 use Optimus\Pages\Tests\DummyTemplate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -43,9 +42,7 @@ class CreatePagesTest extends TestCase
 
     protected function validData()
     {
-        $this->app[TemplateRepository::class]->register(
-            $template = new DummyTemplate
-        );
+        $this->registerTemplate($template = new DummyTemplate);
 
         return [
             'title' => 'Title',

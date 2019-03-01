@@ -2,11 +2,8 @@
 
 namespace Optimus\Pages\Tests\Feature;
 
-use Mockery;
-use Optimus\Pages\Template;
 use Optimus\Pages\Models\Page;
 use Optimus\Pages\Tests\TestCase;
-use Optimus\Pages\TemplateRepository;
 use Optimus\Pages\Tests\DummyTemplate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -20,21 +17,20 @@ class UpdatePagesTest extends TestCase
     {
         parent::setUp();
 
-        $this->registerTemplate($template = $this->mockTemplate());
-        
         $this->page = factory(Page::class)->create([
             'title' => 'Old title',
-            'template' => $template->name,
+            'template' => 'old-template',
             'parent_id' => factory(Page::class)->create()->id,
-            'is_stand_alone' => true
+            'is_stand_alone' => true,
+            'published_at' => null
         ]);
     }
 
-    // /** @test */
+    /** @test */
     public function it_can_update_a_page()
     {
         $response = $this->patchJson(
-            route('admin.pages.update'),
+            route('admin.pages.update', ['id' => $this->page->id]),
             $newData = $this->validData()
         );
 
@@ -46,15 +42,21 @@ class UpdatePagesTest extends TestCase
             ->assertJson([
                 'data' => [
                     'title' => $newData['title'],
+                    'template' => $newData['template'],
+                    'parent_id' => $newData['parent_id'],
+                    'contents' => [[
+                        'key' => 'content',
+                        'value' => $newData['content']
+                    ]],
+                    'is_stand_alone' => $newData['is_stand_alone'],
+                    'is_published' => $newData['is_published']
                 ]
             ]);
     }
 
     protected function validData($overrides = [])
     {
-        $this->app[TemplateRepository::class]->register(
-            $template = new DummyTemplate
-        );
+        $this->registerTemplate($template = new DummyTemplate);
 
         return array_merge([
             'title' => 'New title',
@@ -64,19 +66,5 @@ class UpdatePagesTest extends TestCase
             'is_stand_alone' => false,
             'is_published' => true
         ], $overrides);
-    }
-
-    protected function mockTemplate()
-    {
-        $template = Mockery::mock(Template::class);
-
-        $template->name = 'old-template';
-
-        return $template;
-    }
-
-    protected function registerTemplate(Template $template)
-    {
-        $this->app[TemplateRepository::class]->register($template);
     }
 }

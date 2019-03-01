@@ -2,7 +2,9 @@
 
 namespace Optimus\Pages\Tests;
 
+use Optimus\Pages\Template;
 use Optimus\Media\Models\Media;
+use Optimus\Pages\TemplateRepository;
 use Optimus\Pages\PageServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as BaseTestCase;
@@ -52,6 +54,17 @@ class TestCase extends BaseTestCase
                   ->on('media')
                   ->onDelete('cascade');
         });
+    }
+
+    protected function registerTemplate(Template $template)
+    {
+        $this->app[TemplateRepository::class]->register($template);
+    }
+
+
+    protected function registerTemplates(array $templates)
+    {
+        $this->app[TemplateRepository::class]->registerMany($templates);
     }
 
     public function expectedPageJsonStructure()
