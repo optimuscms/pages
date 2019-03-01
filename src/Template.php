@@ -29,8 +29,9 @@ abstract class Template
      */
     public function label()
     {
+        $name = str_replace(['-', '_'], ' ', $this->name);
         return Str::title(
-            Str::snake($this->name, ' ')
+            Str::snake($name, ' ')
         );
     }
 
