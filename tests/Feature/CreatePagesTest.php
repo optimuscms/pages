@@ -2,6 +2,7 @@
 
 namespace Optimus\Pages\Tests\Feature;
 
+use Optimus\Pages\Models\Page;
 use Optimus\Pages\Tests\TestCase;
 use Optimus\Pages\Tests\DummyTemplate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,7 +27,6 @@ class CreatePagesTest extends TestCase
             ->assertJson([
                 'data' => [
                     'title' => $data['title'],
-                    'slug' => 'title',
                     'template' => $data['template'],
                     'parent_id' => $data['parent_id'],
                     'contents' => [[
@@ -40,17 +40,17 @@ class CreatePagesTest extends TestCase
             ]);
     }
 
-    protected function validData()
+    protected function validData(array $overrides = [])
     {
         $this->registerTemplate($template = new DummyTemplate);
 
-        return [
+        return array_merge([
             'title' => 'Title',
             'template' => $template->name,
-            'parent_id' => null,
+            'parent_id' => factory(Page::class)->create()->id,
             'content' => 'Content', // Required by the dummy template...
             'is_stand_alone' => false,
             'is_published' => true
-        ];
+        ], $overrides);
     }
 }

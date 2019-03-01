@@ -140,10 +140,11 @@ class PagesController extends Controller
 
     protected function validatePage(Request $request)
     {
+        $templates = collect($this->templates->all());
+
         $request->validate([
             'title' => 'required',
-            // Todo: validate template...
-            //'template' => 'required|in:1,2,3',
+            'template' => 'required|in:' . $templates->pluck('name')->implode(','),
             'parent_id' => 'exists:pages,id|nullable',
             'is_stand_alone' => 'present|boolean',
             'is_published' => 'present|boolean'
