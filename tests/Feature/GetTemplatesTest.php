@@ -66,7 +66,7 @@ class GetTemplatesTest extends TestCase
         $templateThree->selectable = true;
 
         // Register the templates
-        $this->app[TemplateRepository::class]->registerMany([
+        $this->registerTemplates([
             $templateOne,
             $templateTwo,
             $templateThree
