@@ -14,18 +14,10 @@ class CreatePagesTest extends TestCase
     /** @test */
     public function it_can_create_a_page()
     {
-        $this->app[TemplateRepository::class]->register(
-            $template = new DummyTemplate
+        $response = $this->postJson(
+            route('admin.pages.store'),
+            $data = $this->validData()
         );
-
-        $response = $this->postJson(route('admin.pages.store'), $data = [
-            'title' => 'Title',
-            'template' => $template->name,
-            'parent_id' => null,
-            'content' => 'Content', // Required by the dummy template...
-            'is_stand_alone' => false,
-            'is_published' => true
-        ]);
 
         $response
             ->assertStatus(201)
@@ -47,5 +39,21 @@ class CreatePagesTest extends TestCase
                     'is_deletable' => true
                 ]
             ]);
+    }
+
+    protected function validData()
+    {
+        $this->app[TemplateRepository::class]->register(
+            $template = new DummyTemplate
+        );
+
+        return [
+            'title' => 'Title',
+            'template' => $template->name,
+            'parent_id' => null,
+            'content' => 'Content', // Required by the dummy template...
+            'is_stand_alone' => false,
+            'is_published' => true
+        ];
     }
 }

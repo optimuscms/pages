@@ -66,7 +66,7 @@ class PagesController extends Controller
         return new PageResource($page);
     }
 
-    public function update(Request $request, TemplateManager $templates, $id)
+    public function update(Request $request, $id)
     {
         $page = Page::withDrafts()->findOrFail($id);
 
@@ -76,7 +76,7 @@ class PagesController extends Controller
             ? $request->input('template')
             : $page->template;
 
-        $template = $templates->find($templateName);
+        $template = $this->templates->find($templateName);
 
         $template->validate($request);
 
