@@ -2,6 +2,7 @@
 
 namespace Optimus\Pages\Tests;
 
+use Mockery;
 use Optimus\Pages\Template;
 use Optimus\Media\Models\Media;
 use Optimus\Pages\TemplateRepository;
@@ -65,6 +66,16 @@ class TestCase extends BaseTestCase
     protected function registerTemplates(array $templates)
     {
         $this->app[TemplateRepository::class]->registerMany($templates);
+    }
+
+    protected function mockTemplate(string $name, bool $selectable = true)
+    {
+        $template = Mockery::mock(Template::class);
+
+        $template->shouldReceive('name')->andReturn($name);
+        $template->shouldReceive('selectable')->andReturn($selectable);
+
+        return $template;
     }
 
     public function expectedPageJsonStructure()

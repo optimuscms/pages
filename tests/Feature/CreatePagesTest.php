@@ -144,7 +144,7 @@ class CreatePagesTest extends TestCase
 
         return array_merge([
             'title' => 'Title',
-            'template' => $template->name,
+            'template' => $template->name(),
             'parent_id' => factory(Page::class)->create()->id,
             'content' => 'Content', // Required by the dummy template...
             'is_stand_alone' => false,

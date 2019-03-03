@@ -8,7 +8,10 @@ use Optimus\Pages\Models\Page;
 
 class DummyTemplate extends Template
 {
-    public $name = 'dummy';
+    public function name(): string
+    {
+        return 'dummy';
+    }
 
     public function validate(Request $request)
     {

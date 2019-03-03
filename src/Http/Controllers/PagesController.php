@@ -2,6 +2,7 @@
 
 namespace Optimus\Pages\Http\Controllers;
 
+use Optimus\Pages\Template;
 use Illuminate\Http\Request;
 use Optimus\Pages\Models\Page;
 use Illuminate\Routing\Controller;
@@ -41,7 +42,7 @@ class PagesController extends Controller
 
         $page = Page::create([
             'title' => $request->input('title'),
-            'template' => $template->name,
+            'template' => $template->name(),
             'parent_id' => $request->input('parent_id'),
             'is_stand_alone' => $request->input('is_stand_alone'),
             'is_deletable' => true,
@@ -140,11 +141,14 @@ class PagesController extends Controller
 
     protected function validatePage(Request $request)
     {
-        $templates = collect($this->templates->all());
+        $templateNames = collect($this->templates->all())
+            ->map(function (Template $template) {
+                return $template->name();
+            });
 
         $request->validate([
             'title' => 'required',
-            'template' => 'required|in:' . $templates->pluck('name')->implode(','),
+            'template' => 'required|in:' . $templateNames->implode(','),
             'parent_id' => 'exists:pages,id|nullable',
             'is_stand_alone' => 'present|boolean',
             'is_published' => 'present|boolean'

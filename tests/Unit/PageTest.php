@@ -7,7 +7,6 @@ use Optimus\Pages\Models\Page;
 use Optimus\Pages\Tests\TestCase;
 use Optimus\Pages\Models\PageContent;
 use Optimus\Pages\TemplateRepository;
-use Optimus\Pages\Tests\DummyTemplate;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -160,11 +159,13 @@ class PageTest extends TestCase
     /** @test */
     public function it_can_retrieve_the_template()
     {
-        $template = new DummyTemplate();
-        $page = new Page(['template' => $template->name]);
+        $template = $this->mockTemplate('dummy');
         $this->app[TemplateRepository::class]->register($template);
 
-        $foundTemplate = $page->getTemplateHandlerAttribute();
-        $this->assertSame($template, $foundTemplate);
+        $page = new Page([
+            'template' => $template->name()
+        ]);
+
+        $this->assertSame($template, $page->getTemplateHandlerAttribute());
     }
 }

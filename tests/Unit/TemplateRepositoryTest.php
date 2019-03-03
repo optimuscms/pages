@@ -2,99 +2,94 @@
 
 namespace Optimus\Pages\Tests;
 
+use Exception;
 use Optimus\Pages\TemplateRepository;
 
-/**
- * @property TemplateRepository templateRepository
- */
 class TemplateRepositoryTest extends TestCase
 {
+    protected $templates;
+
     public function setUp()
     {
-        $this->templateRepository = new TemplateRepository();
+        $this->templates = new TemplateRepository();
     }
 
     /** @test */
     public function it_can_register_templates()
     {
-        $template1 = new DummyTemplate();
-        $template2 = new DummyTemplate();
+        $templateOne = $this->mockTemplate('one');
+        $templateTwo = $this->mockTemplate('two');
 
-        $this->templateRepository->register($template1);
-        $this->assertEquals(1, count($this->templateRepository->all()));
+        $this->templates->register($templateOne);
+        $this->assertCount(1, $this->templates->all());
 
-        $this->templateRepository->register($template2);
-        $this->assertEquals(2, count($this->templateRepository->all()));
+        $this->templates->register($templateTwo);
+        $this->assertCount(2, $templates = $this->templates->all());
 
-        $templates = $this->templateRepository->all();
-
-        $this->assertSame($template1, array_shift($templates));
-        $this->assertSame($template2, array_shift($templates));
+        $this->assertSame($templateOne, array_shift($templates));
+        $this->assertSame($templateTwo, array_shift($templates));
     }
 
     /** @test */
-    public function it_can_register_templates_in_bulk()
+    public function it_can_register_multiple_templates_at_once()
     {
-        $template1 = new DummyTemplate();
-        $template2 = new DummyTemplate();
+        $templateOne = $this->mockTemplate('one');
+        $templateTwo = $this->mockTemplate('two');
 
-        $this->templateRepository->registerMany([$template1, $template2]);
-        $templates = $this->templateRepository->all();
+        $this->templates->registerMany([
+            $templateOne,
+            $templateTwo
+        ]);
 
-        $this->assertEquals(2, count($templates));
+        $templates = $this->templates->all();
 
-        $this->assertSame($template1, array_shift($templates));
-        $this->assertSame($template2, array_shift($templates));
+        $this->assertCount(2, $templates);
+
+        $this->assertSame($templateOne, array_shift($templates));
+        $this->assertSame($templateTwo, array_shift($templates));
     }
 
     /** @test */
-    public function it_only_returns_selectable_templates()
+    public function it_can_get_only_selectable_templates()
     {
-        $template1 = new DummyTemplate();
-        $template2 = new DummyTemplate();
-        $template3 = new DummyTemplate();
+        $templateOne = $this->mockTemplate('one', false);
+        $templateTwo = $this->mockTemplate('two');
+        $templateThree = $this->mockTemplate('three');
 
-        $template1->selectable = false;
-        $template2->selectable = true;
-        $template3->selectable = true;
+        $this->templates->registerMany([
+            $templateOne,
+            $templateTwo,
+            $templateThree
+        ]);
 
-        $this->templateRepository->registerMany([$template1, $template2, $template3]);
-        $selectableTemplates = $this->templateRepository->selectable();
+        $selectableTemplates = $this->templates->selectable();
 
-        $this->assertEquals(2, count($selectableTemplates));
+        $this->assertCount(2, $selectableTemplates);
 
-        $this->assertSame($template2, array_shift($selectableTemplates));
-        $this->assertSame($template3, array_shift($selectableTemplates));
+        $this->assertSame($templateTwo, array_shift($selectableTemplates));
+        $this->assertSame($templateThree, array_shift($selectableTemplates));
     }
 
     /** @test */
-    public function it_can_find_a_template_by_name()
+    public function it_can_find_the_first_template_with_a_given_name()
     {
-        $template1 = new DummyTemplate();
-        $template2 = new DummyTemplate();
+        $templateOne = $this->mockTemplate('one');
+        $templateTwo = $this->mockTemplate('two');
 
-        $template1->name = 'one';
-        $template2->name = 'two';
+        $this->templates->registerMany([
+            $templateOne,
+            $templateTwo
+        ]);
 
-        $this->templateRepository->registerMany([$template1, $template2]);
-
-        $foundTemplate = $this->templateRepository->find('two');
-        $this->assertSame($template2, $foundTemplate);
-
-        $foundTemplate = $this->templateRepository->find('one');
-        $this->assertSame($template1, $foundTemplate);
+        $this->assertSame($templateTwo, $this->templates->find('two'));
+        $this->assertSame($templateOne, $this->templates->find('one'));
     }
 
-    /**
-     * @test
-     * @expectedException \Exception
-     */
-    public function it_will_throw_exception_when_template_not_found()
+    /** @test */
+    public function it_will_throw_an_exception_when_template_not_found()
     {
-        $template1 = new DummyTemplate();
-        $template1->name = 'one';
+        $this->expectException(Exception::class);
 
-        $this->templateRepository->registerMany([$template1]);
-        $this->templateRepository->find('two');
+        $this->templates->find('unregistered');
     }
 }

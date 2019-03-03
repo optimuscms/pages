@@ -31,7 +31,7 @@ class TemplateRepository
     {
         return array_values(Arr::where(
             $this->templates, function (Template $template) {
-                return $template->selectable;
+                return $template->selectable();
             }
         ));
     }
@@ -48,7 +48,7 @@ class TemplateRepository
     {
         $value = Arr::first(
             $this->templates, function (Template $template) use ($name) {
-                return $template->name === $name;
+                return $template->name() === $name;
             }
         );
 

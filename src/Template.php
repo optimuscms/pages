@@ -2,7 +2,6 @@
 
 namespace Optimus\Pages;
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Optimus\Pages\Models\Page;
 
@@ -11,28 +10,30 @@ abstract class Template
     /**
      * Get the template's name.
      *
-     * @var string
+     * @return string
      */
-    public $name = 'default';
-
-    /**
-     * Determine if the template is selectable.
-     *
-     * @var bool
-     */
-    public $selectable = true;
+    public abstract function name(): string;
 
     /**
      * Get the template's label.
      *
      * @return string
      */
-    public function label()
+    public function label(): string
     {
-        $name = str_replace(['-', '_'], ' ', $this->name);
-        return Str::title(
-            Str::snake($name, ' ')
+        return ucfirst(
+            str_replace(['-', '_'], ' ', $this->name())
         );
+    }
+
+    /**
+     * Determine if the template is selectable.
+     *
+     * @return  bool
+     */
+    public function selectable(): bool
+    {
+        return true;
     }
 
     /**
@@ -60,8 +61,9 @@ abstract class Template
     public function toArray()
     {
         return [
-            'name' => $this->name,
-            'label' => $this->label()
+            'name' => $this->name(),
+            'label' => $this->label(),
+            'is_selectable' => $this->selectable()
         ];
     }
 }

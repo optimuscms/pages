@@ -4,37 +4,23 @@ namespace Optimus\Pages\Tests;
 
 class TemplateTest extends TestCase
 {
-    /**
-     * @dataProvider provide_template_names
-     *
-     * @param string $providedName
-     * @param string $expectedName
-     */
-    public function test_label_name_is_standardised(string $providedName, string $expectedName)
+    /** @test */
+    public function it_generates_a_label_from_its_name()
     {
-        $template = new DummyTemplate();
-        $template->name = $providedName;
+        $template = $this->mockTemplate('a-template-name')->makePartial();
 
-        $this->assertSame($expectedName, $template->label());
-    }
-
-    public function provide_template_names()
-    {
-        return [
-            ['a-template-name', 'A Template Name'],
-            ['template_name', 'Template Name'],
-            ['theTemplateName', 'The Template Name'],
-        ];
+        $this->assertEquals('A template name', $template->label());
     }
 
     /** @test */
-    public function test_template_can_be_converted_to_an_array()
+    public function it_can_be_converted_to_an_array()
     {
-        $template = new DummyTemplate();
-        $template->name = 'template 1';
+        $template = $this->mockTemplate('template')->makePartial();
 
-        $arrayRepresentation = $template->toArray();
-        $this->assertSame($template->name, $arrayRepresentation['name']);
-        $this->assertSame($template->label(), $arrayRepresentation['label']);
+        $array = $template->toArray();
+
+        $this->assertEquals($template->name(), $array['name']);
+        $this->assertEquals($template->label(), $array['label']);
+        $this->assertEquals($template->selectable(), $array['is_selectable']);
     }
 }

@@ -160,7 +160,7 @@ class UpdatePagesTest extends TestCase
 
         return array_merge([
             'title' => 'New title',
-            'template' => $template->name,
+            'template' => $template->name(),
             'parent_id' => null,
             'content' => 'Content', // Required by the dummy template...
             'is_stand_alone' => false,
