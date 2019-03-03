@@ -29,11 +29,13 @@ class TemplateRepository
      */
     public function selectable()
     {
-        return array_values(Arr::where(
-            $this->templates, function (Template $template) {
+        $templates = Arr::where(
+            $this->all(), function (Template $template) {
                 return $template->selectable();
             }
-        ));
+        );
+
+        return array_values($templates);
     }
 
     /**
@@ -46,17 +48,19 @@ class TemplateRepository
      */
     public function find(string $name)
     {
-        $value = Arr::first(
-            $this->templates, function (Template $template) use ($name) {
+        $template = Arr::first(
+            $this->all(), function (Template $template) use ($name) {
                 return $template->name() === $name;
             }
         );
 
-        if (! $value) {
-            throw new Exception();
+        if (! $template) {
+            throw new Exception(
+                "A template with the name `{$name}` has not been registered."
+            );
         }
 
-        return $value;
+        return $template;
     }
 
     /**
