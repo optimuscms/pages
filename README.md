@@ -2,7 +2,9 @@
 
 ## Usage
 
-### Todo...
+### Api
+
+Todo...
 
 ### Templates
 
@@ -14,21 +16,34 @@ use Optimus\Pages\Models\Page;
 
 class DefaultTemplate extends Template
 {
-    public $name = 'default';
+    public function name(): string
+    {
+        return 'default';
+    }
     
-    public $selectable = true;
-    
+    public function label(): string
+    {
+        return 'A custom label';
+    }
+
+    public function selectable(): bool
+    {
+        return false;
+    }
+
     public function validate(Request $request)
     {
         $request->validate([
-            //
+            'content' => 'required'
         ]);
     }
-    
+
     public function save(Page $page, Request $request)
     {
-        $page->addContents($request->only('content'));
-        
+        $page->addContents([
+            'content' => $request->input('content')
+        ]);
+
         $page->attachMedia($request->input('media_id'));
     }
 }
