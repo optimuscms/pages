@@ -109,12 +109,6 @@ class UpdatePagesTest extends TestCase
     }
 
     /** @test */
-    public function the_parent_id_field_cannot_be_a_descendant_of_the_page_being_edited()
-    {
-        // Todo...
-    }
-
-    /** @test */
     public function the_is_stand_alone_field_must_be_a_boolean()
     {
         $response = $this->patchJson(

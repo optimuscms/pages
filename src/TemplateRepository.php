@@ -3,7 +3,6 @@
 namespace Optimus\Pages;
 
 use Exception;
-use Illuminate\Support\Arr;
 
 class TemplateRepository
 {
@@ -29,11 +28,9 @@ class TemplateRepository
      */
     public function selectable()
     {
-        $templates = Arr::where(
-            $this->all(), function (Template $template) {
-                return $template->selectable();
-            }
-        );
+        $templates = array_where($this->all(), function ($template) {
+            return $template->selectable();
+        });
 
         return array_values($templates);
     }
@@ -48,11 +45,9 @@ class TemplateRepository
      */
     public function find(string $name)
     {
-        $template = Arr::first(
-            $this->all(), function (Template $template) use ($name) {
-                return $template->name() === $name;
-            }
-        );
+        $template = array_first($this->all(), function ($template) use ($name) {
+            return $template->name() === $name;
+        });
 
         if (! $template) {
             throw new Exception(

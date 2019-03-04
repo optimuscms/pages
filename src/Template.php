@@ -12,7 +12,7 @@ abstract class Template
      *
      * @return string
      */
-    public abstract function name(): string;
+    abstract public function name(): string;
 
     /**
      * Get the template's label.
@@ -21,9 +21,7 @@ abstract class Template
      */
     public function label(): string
     {
-        return ucfirst(
-            str_replace(['-', '_'], ' ', $this->name())
-        );
+        return ucfirst(str_replace('-', ' ', $this->name()));
     }
 
     /**
