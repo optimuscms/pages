@@ -9,7 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class UpdateChildPageUris implements ShouldQueue
+class UpdateChildPageUris
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -33,13 +33,22 @@ class UpdateChildPageUris implements ShouldQueue
      */
     public function handle()
     {
-        $descendants = $this->page->descendants()
+        $this->updateChildPageUris($this->page);
+    }
+
+    protected function updateChildPageUris(Page $parent)
+    {
+        $children = $parent->children()
             ->where('has_fixed_uri', false)
             ->get();
 
-        $descendants->each(function (Page $page) {
-            $page->uri = $page->getUri();
+        $children->each(function (Page $page) use ($parent) {
+            $page->setRelation('parent', $parent);
+
+            $page->uri = $page->generateUri();
             $page->save();
+
+            $this->updateChildPages($page);
         });
     }
 }

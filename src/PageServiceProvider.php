@@ -2,38 +2,40 @@
 
 namespace Optimus\Pages;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class PageServiceProvider extends ServiceProvider
 {
     protected $controllerNamespace = 'Optimus\Pages\Http\Controllers';
 
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
     public function boot()
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadMigrationsFrom(
+            __DIR__ . '/../database/migrations'
+        );
 
         $this->registerAdminRoutes();
     }
 
+    public function register()
+    {
+        $this->app->singleton(TemplateRepository::class);
+    }
+
     protected function registerAdminRoutes()
     {
-        Route::prefix('api')
-             ->middleware('api', 'auth:admin')
+        $this->app['router']
+             ->name('admin.')
              ->namespace($this->controllerNamespace)
-             ->group(function () {
+             ->middleware('web', 'auth:admin')
+             ->group(function ($router) {
                  // Pages
-                 Route::apiResource('pages', 'PagesController');
-                 Route::patch('pages', 'PagesController@reorder');
+                 $router->apiResource('pages', 'PagesController');
+                 $router->patch('pages', 'PagesController@reorder');
 
                  // Templates
-                 Route::apiResource('page-templates', 'TemplatesController')
-                      ->only(['index', 'show']);
+                 $router->apiResource('page-templates', 'TemplatesController')
+                        ->only(['index', 'show']);
              });
     }
 }

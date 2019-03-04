@@ -16,7 +16,7 @@ class PageResource extends Resource
             'uri' => $this->uri,
             'has_fixed_uri' => $this->has_fixed_uri,
             'parent_id' => $this->parent_id,
-            'template_id' => $this->template_id,
+            'template' => $this->template,
             'has_fixed_template' => $this->has_fixed_template,
             'contents' => ContentResource::collection($this->contents),
             'media' => MediaResource::collection($this->media),

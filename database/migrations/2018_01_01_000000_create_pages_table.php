@@ -13,34 +13,20 @@ class CreatePagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('page_templates', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('component_name')->unique();
-            $table->string('handler');
-            $table->boolean('is_selectable')->default(true);
-            $table->timestamps();
-        });
-
         Schema::create('pages', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
             $table->string('slug')->nullable();
             $table->string('uri')->nullable();
             $table->boolean('has_fixed_uri')->default(false);
-            $table->nestedSet();
-            $table->unsignedInteger('template_id')->index();
+            $table->unsignedInteger('parent_id')->index()->nullable();
+            $table->string('template');
             $table->boolean('has_fixed_template')->default(false);
             $table->boolean('is_stand_alone');
             $table->boolean('is_deletable')->default(true);
             $table->unsignedInteger('order');
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
-
-            $table->foreign('template_id')
-                  ->references('id')
-                  ->on('page_templates')
-                  ->onDelete('cascade');
         });
 
         Schema::create('page_contents', function (Blueprint $table) {
@@ -66,6 +52,5 @@ class CreatePagesTable extends Migration
     {
         Schema::dropIfExists('page_contents');
         Schema::dropIfExists('pages');
-        Schema::dropIfExists('page_templates');
     }
 }

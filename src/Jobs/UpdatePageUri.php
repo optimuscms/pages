@@ -29,9 +29,11 @@ class UpdatePageUri
      */
     public function handle()
     {
-        $this->page->uri = $this->page->getUri();
+        $this->page->uri = $this->page->generateUri();
         $this->page->save();
 
-        UpdateChildPageUris::dispatch($this->page);
+        if ($this->page->wasChanged('uri')) {
+            UpdateChildPageUris::dispatch($this->page);
+        }
     }
 }
