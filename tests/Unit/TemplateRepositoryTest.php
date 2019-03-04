@@ -2,7 +2,7 @@
 
 namespace Optimus\Pages\Tests;
 
-use Exception;
+use InvalidArgumentException;
 use Optimus\Pages\TemplateRepository;
 
 class TemplateRepositoryTest extends TestCase
@@ -88,7 +88,7 @@ class TemplateRepositoryTest extends TestCase
     /** @test */
     public function it_will_throw_an_exception_when_template_not_found()
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->templates->find('unregistered');
     }

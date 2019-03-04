@@ -2,7 +2,7 @@
 
 namespace Optimus\Pages;
 
-use Exception;
+use InvalidArgumentException;
 
 class TemplateRepository
 {
@@ -38,7 +38,7 @@ class TemplateRepository
     /**
      * Get the template with the given name.
      *
-     * @throws Exception
+     * @throws \InvalidArgumentException
      *
      * @param  string  $name
      * @return \Optimus\Pages\Template
@@ -46,11 +46,11 @@ class TemplateRepository
     public function find(string $name)
     {
         $template = array_first($this->all(), function ($template) use ($name) {
-            return $template->name() === $name;
+            return $name === $template->name();
         });
 
         if (! $template) {
-            throw new Exception(
+            throw new InvalidArgumentException(
                 "A template with the name `{$name}` has not been registered."
             );
         }
