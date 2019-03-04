@@ -10,6 +10,13 @@ class GetPagesTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     /** @test */
     public function it_can_display_all_the_pages_in_the_correct_order()
     {

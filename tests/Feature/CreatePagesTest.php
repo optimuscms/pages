@@ -2,6 +2,7 @@
 
 namespace Optimus\Pages\Tests\Feature;
 
+use Illuminate\Support\Arr;
 use Optimus\Pages\Models\Page;
 use Optimus\Pages\Tests\TestCase;
 use Optimus\Pages\Tests\DummyTemplate;
@@ -10,6 +11,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class CreatePagesTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
 
     /** @test */
     public function it_can_create_a_page()
@@ -68,7 +76,7 @@ class CreatePagesTest extends TestCase
 
         $this->assertEquals(
             trans('validation.in', ['attribute' => 'template']),
-            array_first($response->decodeResponseJson('errors.template'))
+            Arr::first($response->decodeResponseJson('errors.template'))
         );
     }
 
@@ -88,7 +96,7 @@ class CreatePagesTest extends TestCase
 
         $this->assertEquals(
             trans('validation.exists', ['attribute' => 'parent id']),
-            array_first($response->decodeResponseJson('errors.parent_id'))
+            Arr::first($response->decodeResponseJson('errors.parent_id'))
         );
     }
 
@@ -108,7 +116,7 @@ class CreatePagesTest extends TestCase
 
         $this->assertEquals(
             trans('validation.boolean', ['attribute' => 'is stand alone']),
-            array_first($response->decodeResponseJson('errors.is_stand_alone'))
+            Arr::first($response->decodeResponseJson('errors.is_stand_alone'))
         );
     }
 
@@ -128,7 +136,7 @@ class CreatePagesTest extends TestCase
 
         $this->assertEquals(
             trans('validation.boolean', ['attribute' => 'is published']),
-            array_first($response->decodeResponseJson('errors.is_published'))
+            Arr::first($response->decodeResponseJson('errors.is_published'))
         );
     }
 

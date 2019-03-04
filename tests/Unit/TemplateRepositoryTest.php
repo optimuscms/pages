@@ -9,7 +9,7 @@ class TemplateRepositoryTest extends TestCase
 {
     protected $templates;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->templates = new TemplateRepository();
     }

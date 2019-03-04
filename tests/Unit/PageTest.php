@@ -13,19 +13,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class PageTest extends TestCase
 {
     /** @test */
-    public function it_sets_where_to_save_slug()
+    public function it_specifies_where_to_save_the_slug()
     {
-        $page = new Page(['title' => 'Title']);
+        $page = new Page();
+
         $options = $page->getSlugOptions();
-        $this->assertSame('slug', $options->slugField);
+
+        $this->assertEquals('slug', $options->slugField);
     }
 
     /** @test */
-    public function it_sets_the_source_for_slug_generation()
+    public function it_specified_the_source_for_slug_generation()
     {
-        $page = new Page(['title' => 'Title']);
+        $page = new Page();
+
         $options = $page->getSlugOptions();
-        $this->assertSame(['title'], $options->generateSlugFrom);
+
+        $this->assertEquals(['title'], $options->generateSlugFrom);
     }
 
     /** @test */
@@ -75,27 +79,20 @@ class PageTest extends TestCase
         $page = Mockery::mock(Page::class)->makePartial();
 
         $relationship = Mockery::mock(HasMany::class);
-        $relationship->shouldReceive('createMany')->once()->with(
-            [
-                [
-                    'key' => 'foo',
-                    'value' => 'bar',
-                ],
-                [
-                    'key' => 'bar',
-                    'value' => 'foo',
-                ],
-            ]
-        )->andReturnTrue();
+        $relationship->shouldReceive('createMany')->once()->with([[
+            'key' => 'foo',
+            'value' => 'bar',
+        ], [
+            'key' => 'bar',
+            'value' => 'foo',
+        ]])->andReturnTrue();
 
         $page->shouldReceive('contents')->once()->andReturn($relationship);
 
-        $page->addContents(
-            [
-                'foo' => 'bar',
-                'bar' => 'foo',
-            ]
-        );
+        $page->addContents([
+            'foo' => 'bar',
+            'bar' => 'foo',
+        ]);
     }
 
     /** @test */
@@ -103,19 +100,12 @@ class PageTest extends TestCase
     {
         $page = new Page();
 
-        $page->setRelation(
-            'contents',
-            $page->newCollection(
-                [
-                    new PageContent(
-                        [
-                            'key' => 'foo',
-                            'value' => 'bar',
-                        ]
-                    ),
-                ]
-            )
-        );
+        $page->setRelation('contents', $page->newCollection([
+            new PageContent([
+                'key' => 'foo',
+                'value' => 'bar',
+            ]),
+        ]));
 
         $this->assertTrue($page->hasContent('foo'));
         $this->assertFalse($page->hasContent('bar'));
@@ -126,19 +116,12 @@ class PageTest extends TestCase
     {
         $page = new Page();
 
-        $page->setRelation(
-            'contents',
-            $page->newCollection(
-                [
-                    new PageContent(
-                        [
-                            'key' => 'foo',
-                            'value' => 'bar',
-                        ]
-                    ),
-                ]
-            )
-        );
+        $page->setRelation('contents', $page->newCollection([
+            new PageContent([
+                'key' => 'foo',
+                'value' => 'bar',
+            ]),
+        ]));
 
         $this->assertEquals('bar', $page->getContent('foo'));
     }
@@ -160,7 +143,8 @@ class PageTest extends TestCase
     public function it_can_retrieve_the_template()
     {
         $template = $this->mockTemplate('dummy');
-        $this->app[TemplateRepository::class]->register($template);
+
+        $this->registerTemplate($template);
 
         $page = new Page([
             'template' => $template->name()

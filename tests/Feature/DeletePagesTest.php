@@ -10,6 +10,13 @@ class DeletePagesTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     /** @test */
     public function it_can_delete_a_page()
     {

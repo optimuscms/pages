@@ -2,6 +2,7 @@
 
 namespace Optimus\Pages;
 
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
 
 class TemplateRepository
@@ -28,7 +29,7 @@ class TemplateRepository
      */
     public function selectable()
     {
-        $templates = array_where($this->all(), function ($template) {
+        $templates = Arr::where($this->all(), function ($template) {
             return $template->selectable();
         });
 
@@ -45,7 +46,7 @@ class TemplateRepository
      */
     public function find(string $name)
     {
-        $template = array_first($this->all(), function ($template) use ($name) {
+        $template = Arr::first($this->all(), function ($template) use ($name) {
             return $name === $template->name();
         });
 

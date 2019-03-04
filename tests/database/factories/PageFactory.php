@@ -2,7 +2,6 @@
 
 use Faker\Generator as Faker;
 use Optimus\Pages\Models\Page;
-use Optimus\Pages\TemplateRepository;
 
 $factory->define(Page::class, function (Faker $faker) {
     return [

@@ -4,10 +4,11 @@ namespace Optimus\Pages\Tests;
 
 use Mockery;
 use Optimus\Pages\Template;
-use Optimus\Media\Models\Media;
+use Optimus\Users\Models\AdminUser;
 use Optimus\Pages\TemplateRepository;
 use Optimus\Pages\PageServiceProvider;
-use Illuminate\Database\Schema\Blueprint;
+use Optimus\Users\UserServiceProvider;
+use Optimus\Media\MediaServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -15,7 +16,9 @@ class TestCase extends BaseTestCase
     protected function getPackageProviders($app)
     {
         return [
-            PageServiceProvider::class
+            UserServiceProvider::class,
+            PageServiceProvider::class,
+            MediaServiceProvider::class
         ];
     }
 
@@ -27,41 +30,39 @@ class TestCase extends BaseTestCase
             'database' => ':memory:',
             'prefix' => '',
         ]);
-
-        $app['config']->set('media.model', Media::class);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        $this->withFactories(__DIR__ . '/../database/factories');
+        $this->withFactories(__DIR__ . '/database/factories');
 
-        $schemaBuilder = $this->app['db']->connection()->getSchemaBuilder();
+        foreach (['users', 'media'] as $package) {
+            $this->loadMigrationsFrom(
+                __DIR__ . "/../vendor/optimuscms/{$package}/database/migrations"
+            );
+        }
+    }
 
-        $schemaBuilder->create('media', function (Blueprint $table) {
-            $table->increments('id');
-            $table->timestamps();
-        });
+    protected function signIn()
+    {
+        $user = AdminUser::create([
+            'name' => 'Admin',
+            'email' => 'admin@optimus.test',
+            'username' => 'admin',
+            'password' => bcrypt('password')
+        ]);
 
-        $schemaBuilder->create('mediables', function (Blueprint $table) {
-            $table->unsignedInteger('media_id')->index();
-            $table->unsignedInteger('mediable_id')->index();
-            $table->string('mediable_type');
-            $table->string('collection');
+        $this->actingAs($user, 'admin');
 
-            $table->foreign('media_id')
-                  ->references('id')
-                  ->on('media')
-                  ->onDelete('cascade');
-        });
+        return $user;
     }
 
     protected function registerTemplate(Template $template)
     {
         $this->app[TemplateRepository::class]->register($template);
     }
-
 
     protected function registerTemplates(array $templates)
     {

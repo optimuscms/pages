@@ -7,6 +7,13 @@ use Optimus\Pages\TemplateRepository;
 
 class GetTemplatesTest extends TestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     /** @test */
     public function it_can_display_all_the_selectable_templates()
     {
