@@ -2,11 +2,37 @@
 
 ## Usage
 
-### Api
+### Api routes
 
-Todo...
+#### Pages
 
-### Templates
+```http
+GET /admin/pages
+```
+
+```http
+POST /admin/pages
+```
+
+```http
+GET /admin/pages/{id}
+```
+
+```http
+PATCH /admin/pages/{id}
+```
+
+```http
+DELETE /admin/pages/{id}
+```
+
+#### Page templates
+
+```http
+GET /admin/page-templates
+```
+
+### Working with page templates
 
 #### Create a template
 ```php
@@ -24,11 +50,6 @@ class DefaultTemplate extends Template
     public function label(): string
     {
         return 'A custom label';
-    }
-
-    public function selectable(): bool
-    {
-        return false;
     }
 
     public function validate(Request $request)
@@ -55,9 +76,6 @@ use Optimus\Pages\Facades\Template;
 
 // Get all the registered templates...
 Template::all();
-
-// Get all the selectable templates...
-Template::selectable();
 
 // Get the template with the given name...
 Template::find($name);

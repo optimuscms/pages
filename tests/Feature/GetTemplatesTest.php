@@ -38,7 +38,7 @@ class GetTemplatesTest extends TestCase
                 'data' => [
                     '*' => [
                         'name',
-                        'label',
+                        'label'
                     ]
                 ]
             ])
