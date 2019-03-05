@@ -26,6 +26,7 @@ class PageServiceProvider extends ServiceProvider
     {
         $this->app['router']
              ->name('admin.')
+             ->prefix('admin')
              ->namespace($this->controllerNamespace)
              ->middleware('web', 'auth:admin')
              ->group(function ($router) {
