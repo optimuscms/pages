@@ -7,29 +7,29 @@
 #### Pages
 
 ```http
-GET /admin/pages
+GET /admin/api/pages
 ```
 
 ```http
-POST /admin/pages
+POST /admin/api/pages
 ```
 
 ```http
-GET /admin/pages/{id}
+GET /admin/api/pages/{id}
 ```
 
 ```http
-PATCH /admin/pages/{id}
+PATCH /admin/api/pages/{id}
 ```
 
 ```http
-DELETE /admin/pages/{id}
+DELETE /admin/api/pages/{id}
 ```
 
 #### Page templates
 
 ```http
-GET /admin/page-templates
+GET /admin/api/page-templates
 ```
 
 ### Working with page templates

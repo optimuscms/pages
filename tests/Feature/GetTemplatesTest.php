@@ -3,7 +3,6 @@
 namespace Optimus\Pages\Tests\Feature;
 
 use Optimus\Pages\Tests\TestCase;
-use Optimus\Pages\TemplateRepository;
 
 class GetTemplatesTest extends TestCase
 {
@@ -29,7 +28,7 @@ class GetTemplatesTest extends TestCase
             $templateThree
         ]);
 
-        $response = $this->getJson(route('admin.page-templates.index'));
+        $response = $this->getJson(route('admin.api.page-templates.index'));
 
         $response
             ->assertOk()

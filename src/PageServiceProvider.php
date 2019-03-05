@@ -25,8 +25,8 @@ class PageServiceProvider extends ServiceProvider
     protected function registerAdminRoutes()
     {
         $this->app['router']
-             ->name('admin.')
-             ->prefix('admin')
+             ->name('admin.api.')
+             ->prefix('admin/api')
              ->namespace($this->controllerNamespace)
              ->middleware('web', 'auth:admin')
              ->group(function ($router) {

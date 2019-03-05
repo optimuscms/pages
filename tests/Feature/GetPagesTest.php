@@ -24,7 +24,7 @@ class GetPagesTest extends TestCase
         $firstPage = factory(Page::class)->create(['order' => 1]);
         $thirdPage = factory(Page::class)->create(['order' => 3]);
 
-        $response = $this->getJson(route('admin.pages.index'));
+        $response = $this->getJson(route('admin.api.pages.index'));
 
         $response
             ->assertOk()
@@ -51,7 +51,7 @@ class GetPagesTest extends TestCase
         ]);
 
         $response = $this->getJson(
-            route('admin.pages.index') . "?parent={$parentPage->id}"
+            route('admin.api.pages.index') . "?parent={$parentPage->id}"
         );
 
         $response
@@ -75,7 +75,7 @@ class GetPagesTest extends TestCase
     {
         $page = factory(Page::class)->create()->fresh();
 
-        $response = $this->getJson(route('admin.pages.show', [
+        $response = $this->getJson(route('admin.api.pages.show', [
             'id' => $page->id
         ]));
 

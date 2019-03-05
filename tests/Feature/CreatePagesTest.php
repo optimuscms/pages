@@ -23,7 +23,7 @@ class CreatePagesTest extends TestCase
     public function it_can_create_a_page()
     {
         $response = $this->postJson(
-            route('admin.pages.store'),
+            route('admin.api.pages.store'),
             $data = $this->validData()
         );
 
@@ -51,7 +51,7 @@ class CreatePagesTest extends TestCase
     /** @test */
     public function there_are_required_fields()
     {
-        $response = $this->postJson(route('admin.pages.store'));
+        $response = $this->postJson(route('admin.api.pages.store'));
 
         $response
             ->assertStatus(422)
@@ -64,7 +64,7 @@ class CreatePagesTest extends TestCase
     public function the_template_field_must_be_the_name_of_a_registered_template()
     {
         $response = $this->postJson(
-            route('admin.pages.store'),
+            route('admin.api.pages.store'),
             $this->validData(['template' => 'unregistered'])
         );
 
@@ -84,7 +84,7 @@ class CreatePagesTest extends TestCase
     public function the_parent_id_field_must_be_a_valid_page_id_if_not_null()
     {
         $response = $this->postJson(
-            route('admin.pages.store'),
+            route('admin.api.pages.store'),
             $this->validData(['parent_id' => -1])
         );
 
@@ -104,7 +104,7 @@ class CreatePagesTest extends TestCase
     public function the_is_stand_alone_field_must_be_a_boolean()
     {
         $response = $this->postJson(
-            route('admin.pages.store'),
+            route('admin.api.pages.store'),
             $this->validData(['is_stand_alone' => 'string'])
         );
 
@@ -124,7 +124,7 @@ class CreatePagesTest extends TestCase
     public function the_is_published_field_must_be_a_boolean()
     {
         $response = $this->postJson(
-            route('admin.pages.store'),
+            route('admin.api.pages.store'),
             $this->validData(['is_published' => 'string'])
         );
 

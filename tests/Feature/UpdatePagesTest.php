@@ -33,7 +33,7 @@ class UpdatePagesTest extends TestCase
     public function it_can_update_a_page()
     {
         $response = $this->patchJson(
-            route('admin.pages.update', ['id' => $this->page->id]),
+            route('admin.api.pages.update', ['id' => $this->page->id]),
             $newData = $this->validData()
         );
 
@@ -61,7 +61,7 @@ class UpdatePagesTest extends TestCase
     public function there_are_required_fields()
     {
         $response = $this->patchJson(
-            route('admin.pages.update', ['id' => $this->page->id])
+            route('admin.api.pages.update', ['id' => $this->page->id])
         );
 
         $response
@@ -75,7 +75,7 @@ class UpdatePagesTest extends TestCase
     public function the_template_field_must_be_the_name_of_a_registered_template()
     {
         $response = $this->patchJson(
-            route('admin.pages.update', ['id' => $this->page->id]),
+            route('admin.api.pages.update', ['id' => $this->page->id]),
             $this->validData(['template' => 'unregistered'])
         );
 
@@ -95,7 +95,7 @@ class UpdatePagesTest extends TestCase
     public function the_parent_id_field_must_be_a_valid_page_id_if_not_null()
     {
         $response = $this->patchJson(
-            route('admin.pages.update', ['id' => $this->page->id]),
+            route('admin.api.pages.update', ['id' => $this->page->id]),
             $this->validData(['parent_id' => -1])
         );
 
@@ -115,7 +115,7 @@ class UpdatePagesTest extends TestCase
     public function the_is_stand_alone_field_must_be_a_boolean()
     {
         $response = $this->patchJson(
-            route('admin.pages.update', ['id' => $this->page->id]),
+            route('admin.api.pages.update', ['id' => $this->page->id]),
             $this->validData(['is_stand_alone' => 'string'])
         );
 
@@ -135,7 +135,7 @@ class UpdatePagesTest extends TestCase
     public function the_is_published_field_must_be_a_boolean()
     {
         $response = $this->patchJson(
-            route('admin.pages.update', ['id' => $this->page->id]),
+            route('admin.api.pages.update', ['id' => $this->page->id]),
             $this->validData(['is_published' => 'string'])
         );
 
