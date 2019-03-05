@@ -50,27 +50,6 @@ class TemplateRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_only_selectable_templates()
-    {
-        $templateOne = $this->mockTemplate('one', false);
-        $templateTwo = $this->mockTemplate('two');
-        $templateThree = $this->mockTemplate('three');
-
-        $this->templates->registerMany([
-            $templateOne,
-            $templateTwo,
-            $templateThree
-        ]);
-
-        $selectableTemplates = $this->templates->selectable();
-
-        $this->assertCount(2, $selectableTemplates);
-
-        $this->assertSame($templateTwo, array_shift($selectableTemplates));
-        $this->assertSame($templateThree, array_shift($selectableTemplates));
-    }
-
-    /** @test */
     public function it_can_find_the_first_template_with_a_given_name()
     {
         $templateOne = $this->mockTemplate('one');

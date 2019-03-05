@@ -18,7 +18,7 @@ class GetPagesTest extends TestCase
     }
 
     /** @test */
-    public function it_can_display_all_the_pages_in_the_correct_order()
+    public function it_can_display_all_pages_in_the_correct_order()
     {
         $secondPage = factory(Page::class)->create(['order' => 2]);
         $firstPage = factory(Page::class)->create(['order' => 1]);
@@ -71,7 +71,7 @@ class GetPagesTest extends TestCase
     }
 
     /** @test */
-    public function it_can_display_a_specific_page_template()
+    public function it_can_display_a_specific_page()
     {
         $page = factory(Page::class)->create()->fresh();
 

@@ -69,12 +69,11 @@ class TestCase extends BaseTestCase
         $this->app[TemplateRepository::class]->registerMany($templates);
     }
 
-    protected function mockTemplate(string $name, bool $selectable = true)
+    protected function mockTemplate(string $name)
     {
         $template = Mockery::mock(Template::class);
 
         $template->shouldReceive('name')->andReturn($name);
-        $template->shouldReceive('selectable')->andReturn($selectable);
 
         return $template;
     }

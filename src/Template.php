@@ -1,7 +1,6 @@
 <?php
 
-namespace Optimus\Pages\Contracts;
-
+namespace Optimus\Pages;
 use Illuminate\Http\Request;
 use Optimus\Pages\Models\Page;
 
@@ -22,16 +21,6 @@ abstract class Template
     public function label(): string
     {
         return ucfirst(str_replace('-', ' ', $this->name()));
-    }
-
-    /**
-     * Determine if the template is selectable.
-     *
-     * @return  bool
-     */
-    public function selectable(): bool
-    {
-        return true;
     }
 
     /**
@@ -60,8 +49,7 @@ abstract class Template
     {
         return [
             'name' => $this->name(),
-            'label' => $this->label(),
-            'is_selectable' => $this->selectable()
+            'label' => $this->label()
         ];
     }
 }

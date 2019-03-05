@@ -13,6 +13,17 @@ class TemplateRepository
     protected $templates = [];
 
     /**
+     * Create a new TemplateRepository instance.
+     *
+     * @param  array  $templates
+     * @return void
+     */
+    public function __construct(array $templates = [])
+    {
+        $this->registerMany($templates);
+    }
+
+    /**
      * Get all the registered templates.
      *
      * @return \Optimus\Pages\Template[]
@@ -20,20 +31,6 @@ class TemplateRepository
     public function all()
     {
         return $this->templates;
-    }
-
-    /**
-     * Get all the registered templates.
-     *
-     * @return array
-     */
-    public function selectable()
-    {
-        $templates = Arr::where($this->all(), function ($template) {
-            return $template->selectable();
-        });
-
-        return array_values($templates);
     }
 
     /**
@@ -46,9 +43,12 @@ class TemplateRepository
      */
     public function find(string $name)
     {
-        $template = Arr::first($this->all(), function ($template) use ($name) {
-            return $name === $template->name();
-        });
+        $template = Arr::first(
+            $this->all(),
+            function (Template $template) use ($name) {
+                return $name === $template->name();
+            }
+        );
 
         if (! $template) {
             throw new InvalidArgumentException(

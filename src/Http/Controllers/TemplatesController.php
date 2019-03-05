@@ -15,10 +15,8 @@ class TemplatesController extends Controller
      */
     public function index(TemplateRepository $templates)
     {
-        $templates = collect($templates->selectable());
-
         return response()->json([
-            'data' => $templates->map->toArray()
+            'data' => collect($templates->all())->map->toArray()
         ]);
     }
 }

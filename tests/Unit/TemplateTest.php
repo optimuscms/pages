@@ -19,8 +19,8 @@ class TemplateTest extends TestCase
 
         $array = $template->toArray();
 
+        $this->assertCount(2, $array);
         $this->assertEquals($template->name(), $array['name']);
         $this->assertEquals($template->label(), $array['label']);
-        $this->assertEquals($template->selectable(), $array['is_selectable']);
     }
 }

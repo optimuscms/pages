@@ -145,13 +145,13 @@ class PagesController extends Controller
 
     protected function validatePage(Request $request)
     {
-        $templates = collect($this->templates->all())->map(function ($template) {
-            return $template->name();
-        });
-
         $request->validate([
             'title' => 'required',
-            'template' => 'required|in:' . $templates->implode(','),
+            'template' => 'required|in:' . collect($this->templates->all())
+                ->map(function (Template $template) {
+                    return $template->name();
+                })
+                ->implode(','),
             'parent_id' => 'exists:pages,id|nullable',
             'is_stand_alone' => 'present|boolean',
             'is_published' => 'present|boolean'

@@ -10,10 +10,10 @@ class PageServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $this->loadMigrationsFrom(
-            __DIR__ . '/../database/migrations'
-        );
+        // Migrations
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
+        // Routes
         $this->registerAdminRoutes();
     }
 
