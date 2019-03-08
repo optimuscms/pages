@@ -36,34 +36,116 @@ Appropriate HTTP status codes are provided, and these should be used to check th
 
 <a name="pages-all"></a>
 ### List pages
+List all current pages.
 ```http
 GET /admin/api/pages
 ```
+
+**Parameters**
+
+| Parameter | Required? | Type  | Description    |
+|-----------|-----------|-------|----------------|
+| parent    |    ✗      | int   | A page ID. When provided will only show pages that have this page as their parent. |
+
+
+**Example Response**
+
+
+
 <a name="pages-create"></a>
 ### Create page
+Create and store a new page.
 ```http
 POST /admin/api/pages
 ```
+
+**Parameters**
+
+| Parameter | Required? | Type  | Description    |
+|-----------|-----------|-------|----------------|
+| title     |    ✓      | string  | The page title |
+| template  |    ✓      | string  | The name of the template that should be applied to this page |
+| is_stand_alone |    ✓ | boolean | If false, the page will not appear in any navigation and will only be accessible via a direct link. |
+| is_published |    ✓   | boolean | Whether the page is ready to be made public |
+| parent_id | ✗         | int     | The ID of a page to nest this one under |
+| slug      | ✗         | string  | A URL-friendly identifier. Will be used as part of the final public-facing URL to the page. |
+
+
+**Example Response**
+
+
+
 <a name="pages-get"></a>
 ### Get page
+Get details of a specific page.
 ```http
 GET /admin/api/pages/{id}
 ```
+
+**Parameters**
+
+| Parameter | Required? | Type  | Description    |
+|-----------|-----------|-------|----------------|
+| id      |    ✓      | int  | The ID of the page |
+
+**Example Response**
+
+
+
 <a name="pages-update"></a>
 ### Update page
+Update the details of a specific page.
 ```http
 PATCH /admin/api/pages/{id}
 ```
+
+**Parameters**
+
+| Parameter | Required? | Type  | Description    |
+|-----------|-----------|-------|----------------|
+| title     |    ✓      | string  | The page title |
+| template  |    ✓      | string  | The name of the template that should be applied to this page |
+| is_stand_alone |    ✓ | boolean | If false, the page will not appear in any navigation and will only be accessible via a direct link. |
+| is_published |    ✓   | boolean | Whether the page is ready to be made public |
+| parent_id | ✗         | int     | The ID of a page to nest this one under |
+| slug      | ✗         | string  | A URL-friendly identifier. Will be used as part of the final public-facing URL to the page. |
+
+
+**Example Response**
+
+
+
 <a name="pages-delete"></a>
 ### Delete page
+Delete a specific page.
 ```http
 DELETE /admin/api/pages/{id}
 ```
+
+**Parameters**
+
+| Parameter | Required? | Type  | Description    |
+|-----------|-----------|-------|----------------|
+| id      |    ✓      | int  | The ID of the page |
+
+**Example Response**
+
+
+
 <a name="templates-all"></a>
 ### List template
+List all available templates.
 ```http
 GET /admin/api/page-templates
 ```
+
+**Parameters**
+
+None
+
+**Example Response**
+
+
 
 ### Working with page templates
 
