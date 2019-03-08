@@ -50,7 +50,7 @@ GET /admin/api/pages
 
 **Example Response**
 
-```json
+```json5
 [
     {
         "id": 19,
@@ -109,7 +109,7 @@ GET /admin/api/pages
         "updated_at": "2019-02-19 09:36:23"
     },
     {
-        ...details of second page
+        // ...details of second page
     }
 ]
 ```
