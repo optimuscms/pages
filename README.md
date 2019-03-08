@@ -5,7 +5,9 @@ within the CMS.
 ## Installation
 This package can be installed through Composer.
 
-`composer require optimuscms/pages`
+```bash
+composer require optimuscms/pages
+```
 
 In Laravel 5.5 and above the package will autoregister the service provider. 
 
