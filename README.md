@@ -19,32 +19,48 @@ In Laravel 5.4 you must install this service provider:
 ];
 ```
 
-### Api routes
+## API Routes
 
-#### Pages
+The API follows standard RESTful conventions, with responses being returned in JSON. 
+Appropriate HTTP status codes are provided, and these should be used to check the outcome of an operation.
 
+**Pages**
+ - [List pages](#pages-all)
+ - [Get folder](#pages-get)
+ - [Create folder](#pages-create)
+ - [Update folder](#pages-update)
+ - [Delete folder](#pages-delete)
+ 
+**Templates**
+ - [List templates](#templates-all)
+
+<a name="pages-all"></a>
+### List pages
 ```http
 GET /admin/api/pages
 ```
-
+<a name="pages-create"></a>
+### Create page
 ```http
 POST /admin/api/pages
 ```
-
+<a name="pages-get"></a>
+### Get page
 ```http
 GET /admin/api/pages/{id}
 ```
-
+<a name="pages-update"></a>
+### Update page
 ```http
 PATCH /admin/api/pages/{id}
 ```
-
+<a name="pages-delete"></a>
+### Delete page
 ```http
 DELETE /admin/api/pages/{id}
 ```
-
-#### Page templates
-
+<a name="templates-all"></a>
+### List template
 ```http
 GET /admin/api/page-templates
 ```
