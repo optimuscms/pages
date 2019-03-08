@@ -1,6 +1,23 @@
 # Pages
+This package provides the core back end functionality for creating pages and page templates 
+within the CMS.
 
 ## Usage
+This package can be installed through Composer.
+
+`composer require optimuscms/pages`
+
+In Laravel 5.5 and above the package will autoregister the service provider. 
+
+In Laravel 5.4 you must install this service provider:
+```php
+// config/app.php
+'providers' => [
+    ...
+    Optimus\Pages\PageServiceProvider::class,
+    ...
+];
+```
 
 ### Api routes
 
