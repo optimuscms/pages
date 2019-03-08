@@ -1,8 +1,8 @@
 # Pages
-This package provides the core back end functionality for creating pages and page templates 
+This package provides the core backend functionality for creating pages and page templates 
 within the CMS.
 
-## Usage
+## Installation
 This package can be installed through Composer.
 
 `composer require optimuscms/pages`
