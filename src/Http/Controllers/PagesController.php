@@ -12,13 +12,28 @@ use Optimus\Pages\Http\Resources\PageResource;
 
 class PagesController extends Controller
 {
+    /**
+     * @var \Optimus\Pages\TemplateRepository
+     */
     protected $templates;
 
+    /**
+     * PagesController constructor.
+     *
+     * @param  \Optimus\Pages\TemplateRepository  $templates
+     * @return void
+     */
     public function __construct(TemplateRepository $templates)
     {
         $this->templates = $templates;
     }
 
+    /**
+     * Display a list of pages.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Resources\Json\ResourceCollection
+     */
     public function index(Request $request)
     {
         $pages = Page::withDrafts()
@@ -30,6 +45,14 @@ class PagesController extends Controller
         return PageResource::collection($pages);
     }
 
+    /**
+     * Create a new page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Resources\Json\JsonResource
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function store(Request $request)
     {
         $this->validatePage($request);
@@ -40,15 +63,17 @@ class PagesController extends Controller
 
         $template->validate($request);
 
-        $page = Page::create([
-            'title' => $request->input('title'),
-            'slug' => $request->input('slug'),
-            'template' => $template->name(),
-            'parent_id' => $request->input('parent_id'),
-            'is_stand_alone' => $request->input('is_stand_alone'),
-            'is_deletable' => true,
-            'order' => Page::max('order') + 1
-        ]);
+        $page = new Page();
+
+        $page->title = $request->input('title');
+        $page->slug = $request->input('slug');
+        $page->template = $template->name();
+        $page->parent_id = $request->input('parent_id');
+        $page->is_stand_alone = $request->input('is_stand_alone');
+        $page->is_deletable = true;
+        $page->order = Page::max('order') + 1;
+
+        $page->save();
 
         UpdatePageUri::dispatch($page);
 
@@ -61,6 +86,12 @@ class PagesController extends Controller
         return new PageResource($page);
     }
 
+    /**
+     * Display the specified page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Resources\Json\JsonResource
+     */
     public function show($id)
     {
         $page = Page::withDrafts()->findOrFail($id);
@@ -68,29 +99,38 @@ class PagesController extends Controller
         return new PageResource($page);
     }
 
+    /**
+     * Update the specified page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Resources\Json\JsonResource
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function update(Request $request, $id)
     {
         $page = Page::withDrafts()->findOrFail($id);
 
         $this->validatePage($request);
 
-        $templateName = ! $page->has_fixed_template
-            ? $request->input('template')
-            : $page->template;
-
-        $template = $this->templates->find($templateName);
+        $template = $this->templates->find(
+            ! $page->has_fixed_template
+                ? $request->input('template')
+                : $page->template
+        );
 
         $template->validate($request);
 
-        $page->update([
-            'title' => $request->input('title'),
-            'slug' => ! $page->has_fixed_uri
-                ? $request->input('slug')
-                : $page->slug,
-            'template' => $templateName,
-            'parent_id' => $request->input('parent_id'),
-            'is_stand_alone' => $request->input('is_stand_alone')
-        ]);
+        $page->title = $request->input('title');
+        $page->slug = ! $page->has_fixed_uri
+            ? $request->input('slug')
+            : $page->slug;
+        $page->template = $template->name();
+        $page->parent_id = $request->input('parent_id');
+        $page->is_stand_alone = $request->input('is_stand_alone');
+
+        $page->save();
 
         if (! $page->has_fixed_uri) {
             UpdatePageUri::dispatch($page);
@@ -110,6 +150,14 @@ class PagesController extends Controller
         return new PageResource($page);
     }
 
+    /**
+     * Reorder a list of pages.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function reorder(Request $request)
     {
         $request->validate([
@@ -130,6 +178,12 @@ class PagesController extends Controller
         return response(null, 204);
     }
 
+    /**
+     * Delete the specified page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
         $page = Page::withDrafts()->findOrFail($id);
@@ -143,6 +197,14 @@ class PagesController extends Controller
         return response(null, 204);
     }
 
+    /**
+     * Validate the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
     protected function validatePage(Request $request)
     {
         $request->validate([
