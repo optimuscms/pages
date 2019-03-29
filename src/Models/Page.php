@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Spatie\Sluggable\HasSlug;
 use Optix\Draftable\Draftable;
 use Spatie\Sluggable\SlugOptions;
-use Optimus\Pages\TemplateRepository;
+use Optimus\Pages\TemplateRegistry;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -94,7 +94,7 @@ class Page extends Model
 
     public function getTemplateHandlerAttribute()
     {
-        return app(TemplateRepository::class)->find($this->template);
+        return app(TemplateRegistry::class)->find($this->template);
     }
 
     public function generateUri()

@@ -2,7 +2,7 @@
 
 namespace Optimus\Pages\Facades;
 
-use Optimus\Pages\TemplateRepository;
+use Optimus\Pages\TemplateRegistry;
 use Illuminate\Support\Facades\Facade;
 
 class Template extends Facade
@@ -14,6 +14,6 @@ class Template extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return TemplateRepository::class;
+        return TemplateRegistry::class;
     }
 }

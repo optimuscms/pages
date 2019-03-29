@@ -5,7 +5,7 @@ namespace Optimus\Pages\Tests;
 use Mockery;
 use Optimus\Pages\Template;
 use Optimus\Users\Models\AdminUser;
-use Optimus\Pages\TemplateRepository;
+use Optimus\Pages\TemplateRegistry;
 use Optimus\Pages\PageServiceProvider;
 use Optimus\Users\UserServiceProvider;
 use Optimus\Media\MediaServiceProvider;
@@ -61,12 +61,12 @@ class TestCase extends BaseTestCase
 
     protected function registerTemplate(Template $template)
     {
-        $this->app[TemplateRepository::class]->register($template);
+        $this->app[TemplateRegistry::class]->register($template);
     }
 
     protected function registerTemplates(array $templates)
     {
-        $this->app[TemplateRepository::class]->registerMany($templates);
+        $this->app[TemplateRegistry::class]->registerMany($templates);
     }
 
     protected function mockTemplate(string $name)

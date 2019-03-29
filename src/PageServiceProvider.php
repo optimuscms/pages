@@ -19,7 +19,7 @@ class PageServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->singleton(TemplateRepository::class);
+        $this->app->singleton(TemplateRegistry::class);
     }
 
     protected function registerAdminRoutes()

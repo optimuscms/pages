@@ -6,7 +6,6 @@ use Mockery;
 use Optimus\Pages\Models\Page;
 use Optimus\Pages\Tests\TestCase;
 use Optimus\Pages\Models\PageContent;
-use Optimus\Pages\TemplateRepository;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

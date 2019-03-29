@@ -3,15 +3,15 @@
 namespace Optimus\Pages\Tests;
 
 use InvalidArgumentException;
-use Optimus\Pages\TemplateRepository;
+use Optimus\Pages\TemplateRegistry;
 
-class TemplateRepositoryTest extends TestCase
+class TemplateRegistryTest extends TestCase
 {
     protected $templates;
 
     public function setUp(): void
     {
-        $this->templates = new TemplateRepository();
+        $this->templates = new TemplateRegistry();
     }
 
     /** @test */

@@ -5,7 +5,7 @@ namespace Optimus\Pages;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
 
-class TemplateRepository
+class TemplateRegistry
 {
     /**
      * @var \Optimus\Pages\Template[]
@@ -13,7 +13,7 @@ class TemplateRepository
     protected $templates = [];
 
     /**
-     * Create a new TemplateRepository instance.
+     * Create a new TemplateRegistry instance.
      *
      * @param  array  $templates
      * @return void
@@ -44,8 +44,7 @@ class TemplateRepository
     public function find(string $name)
     {
         $template = Arr::first(
-            $this->all(),
-            function (Template $template) use ($name) {
+            $this->all(), function (Template $template) use ($name) {
                 return $name === $template->name();
             }
         );

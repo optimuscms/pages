@@ -6,24 +6,24 @@ use Optimus\Pages\Template;
 use Illuminate\Http\Request;
 use Optimus\Pages\Models\Page;
 use Illuminate\Routing\Controller;
+use Optimus\Pages\TemplateRegistry;
 use Optimus\Pages\Jobs\UpdatePageUri;
-use Optimus\Pages\TemplateRepository;
 use Optimus\Pages\Http\Resources\PageResource;
 
 class PagesController extends Controller
 {
     /**
-     * @var \Optimus\Pages\TemplateRepository
+     * @var \Optimus\Pages\TemplateRegistry
      */
     protected $templates;
 
     /**
      * PagesController constructor.
      *
-     * @param  \Optimus\Pages\TemplateRepository  $templates
+     * @param  \Optimus\Pages\TemplateRegistry  $templates
      * @return void
      */
-    public function __construct(TemplateRepository $templates)
+    public function __construct(TemplateRegistry $templates)
     {
         $this->templates = $templates;
     }
