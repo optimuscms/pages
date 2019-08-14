@@ -9,9 +9,10 @@
     ],
     "require": {
         "laravel/framework": "^5.7",
-        "optix/draftable": "^1.0",
         "optimuscms/media": "^0.2",
+        "optimuscms/meta": "^1.1",
         "optimuscms/users": "^0.2",
+        "optix/draftable": "^1.0",
         "spatie/laravel-sluggable": "^2.1"
     },
     "require-dev": {
