@@ -2,6 +2,7 @@
 
 namespace Optimus\Pages\Models;
 
+use Optix\Meta\HasMeta;
 use Optix\Media\HasMedia;
 use Illuminate\Http\Request;
 use Spatie\Sluggable\HasSlug;
@@ -15,6 +16,7 @@ class Page extends Model
 {
     use Draftable,
         HasMedia,
+        HasMeta,
         HasSlug;
 
     protected $casts = [
@@ -160,5 +162,15 @@ class Page extends Model
     public function contents()
     {
         return $this->hasMany(PageContent::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saved(function ($model) {
+            /** @var HasMeta $model */
+            $model->saveMeta(request('meta') ?? []);
+        });
     }
 }
