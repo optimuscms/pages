@@ -10,7 +10,7 @@
     "require": {
         "laravel/framework": "^5.7",
         "optix/draftable": "^1.0",
-        "optimuscms/media": "^0.1",
+        "optimuscms/media": "^0.2",
         "optimuscms/users": "^0.2",
         "spatie/laravel-sluggable": "^2.1"
     },
